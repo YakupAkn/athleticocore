@@ -4,6 +4,13 @@ Bu doküman AthleticoCore projesinin tüm sürüm geçmişini, teknik gelişmele
 
 
 
+---
+
+## v0.1.0 — 3 Jan 2026
+### Added
+- Supabase altyapısı
+- Koç destekli antrenman akışı
+- İstatistik ve ilerleme sistemi temeli
 
 ---
 
