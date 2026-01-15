@@ -3,6 +3,15 @@
 Bu doküman AthleticoCore projesinin tüm sürüm geçmişini, teknik gelişmeleri ve mimari kararları kronolojik olarak listeler.
 
 
+
+
+---
+
+## v0.0.9 — 30 Dec 2025
+### Improved
+- AI Coach doğruluk oranı %19 artırıldı
+- Genel UI iyileştirmeleri
+
 ---
 
 ## v0.0.8 — 21 Dec 2025
