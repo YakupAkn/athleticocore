@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AthleticoCore - Profil</title>
+    <link rel="icon" type="image/png" href="assets/icons/ac.png?v=1">
+    <link rel="manifest" href="manifest.json">
+    <!-- Supabase ve Harici Kütüphaneler -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL    = import.meta.env.SUPABASE_URL;
+        const SUPABASE_ANON_KEY = import.meta.env.SUPABASE_ANON_KEY;
+        window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKGT70JY2E"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PKGT70JY2E');
+    </script>
+    <style>
+
+        :root {
+            --bg-color: #000000;
+            --card-bg: #111111;
+            --accent-color: #0070f3;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --border-color: #222222;
+            --nav-bg: rgba(10, 10, 10, 0.95);
+            --header-bg: rgba(0, 0, 0, 0.8);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-main: #000000;
+            --text-dim: #666666;
+            --border-color: #e0e0e0;
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            --header-bg: rgba(245, 245, 247, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); transition: var(--transition); }
+
+        header {
+            width: 100%; max-width: 480px; margin: 0 auto;
+            padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .content { width: 100%; max-width: 480px; margin: 0 auto; padding: 1.5rem 1.5rem 8rem 1.5rem; }
+
+        .profile-hero { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+        .avatar-circle {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), #00a3ff);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; font-weight: 800; color: white; border: 4px solid var(--border-color);
+        }
+        .user-info h2 { font-size: 1.5rem; font-weight: 800; }
+        .user-info p { color: var(--text-dim); font-size: 0.9rem; text-align: center; }
+
+        .stats-summary {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 2rem;
+        }
+        .summary-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 1rem; border-radius: 16px; text-align: center;
+        }
+        .summary-card span { display: block; }
+        .summary-card .val { font-size: 1.2rem; font-weight: 800; color: var(--accent-color); }
+        .summary-card .lbl { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-top: 4px; }
+
+        .settings-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem;
+        }
+        .settings-card h3 { font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-dim); }
+
+        .input-group { margin-bottom: 1rem; }
+        .input-group label { display: block; font-size: 0.8rem; margin-bottom: 6px; color: var(--text-dim); }
+        .input-group input {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
+            background: var(--bg-color); color: var(--text-main); font-family: inherit;
+        }
+
+        .btn {
+            width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary { background: var(--accent-color); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: #ff4444; margin-top: 10px; }
+
+        .message-box {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            padding: 12px 24px; border-radius: 10px; z-index: 3000; display: none;
+            background: var(--card-bg); border: 1px solid var(--accent-color); color: white;
+        }
+        .ac-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+        .ac-btn:active { transform: scale(0.95); }.ac-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+        .ac-btn:active { transform: scale(0.95); }
+        .bottom-nav {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 40px); max-width: 400px;
+            background: var(--nav-bg); backdrop-filter: blur(20px);
+            display: flex; justify-content: space-around; padding: 12px;
+            border-radius: 24px; border: 1px solid var(--border-color); z-index: 2000;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            color: var(--text-dim); text-decoration: none; font-size: 0.6rem; font-weight: 700; gap: 4px;
+        }
+        .nav-item.active { color: var(--accent-color); }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <header>
+        <div style="font-weight: 900; font-size: 1.2rem;">Profil</div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <button id="share-btn" style="background:none; border:none; color:var(--text-main); cursor:pointer;">
+                <i data-lucide="share-2"></i>
+            </button>
+            <button id="theme-btn" style="background:none; border:none; color:var(--text-main); cursor:pointer;">
+                <i data-lucide="sun" id="theme-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="msg-box" class="message-box"></div>
+
+    <main class="content">
+        <div class="profile-hero">
+            <div class="avatar-circle" id="avatar-initials">?</div>
+            <div class="user-info">
+                <h2 id="display-name">Yükleniyor...</h2>
+                <p id="display-email">E-posta adresi</p>
+            </div>
+        </div>
+
+        <div class="stats-summary">
+            <div class="summary-card">
+                <span class="val" id="profile-total-pushups">0</span>
+                <span class="lbl">Toplam Şınav</span>
+            </div>
+            <div class="summary-card">
+                <span class="val" id="total-sessions">0</span>
+                <span class="lbl">Antrenman</span>
+            </div>
+            <div class="summary-card">
+                <span class="val" id="total-minutes">0</span>
+                <span class="lbl">Dakika</span>
+            </div>
+        </div>
+        <div id="install-card" style="display:none;" class="settings-card">
+            <h3>UYGULAMA</h3>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+                <div>
+                    <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 4px;">Uygulamayı Yükle</div>
+                    <div style="font-size: 0.75rem; color: var(--text-dim);">Hızlı erişim ve offline kullanım için ana ekrana ekle.</div>
+                </div>
+                <button onclick="installPWA()" class="ac-btn" style="width: 45px; height: 45px; border-radius: 12px; background: var(--accent-color); color: white;">
+                    <i data-lucide="download"></i>
+                </button>
+            </div>
+        </div>
+        <div class="settings-card">
+            <h3>HESAP AYARLARI</h3>
+            <div class="input-group">
+                <label>Ad Soyad</label>
+                <input type="text" id="input-fullname" placeholder="Adınız Soyadınız">
+            </div>
+            <button class="btn btn-primary" id="update-profile-btn">
+                <i data-lucide="save" style="width:18px;"></i>
+                Ayarları Kaydet
+            </button>
+            <button class="btn btn-outline" id="logout-btn">
+                <i data-lucide="log-out" style="width:18px;"></i>
+                Çıkış Yap
+            </button>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i data-lucide="home"></i>
+            <span>Ana Sayfa</span>
+        </a>
+
+        <a href="coach.html" class="nav-item" aria-current="page">
+            <i data-lucide="activity"></i>
+            <span>AI PushUp</span>
+        </a>
+
+        <a href="stats.html" class="nav-item">
+            <i data-lucide="bar-chart-3"></i>
+            <span>Analiz</span>
+        </a>
+
+        <a href="profile.html" class="nav-item active">
+            <i data-lucide="user-round"></i>
+            <span>Profil</span>
+        </a>
+
+        <a href="ayarlar.html" class="nav-item">
+            <i data-lucide="settings"></i>
+            <span>Ayarlar</span>
+        </a>
+        
+    </nav>
+
+    <script>
+        let deferredPrompt;
+        const installCard = document.getElementById('install-card');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Tarayıcının varsayılan istemini engelle
+            e.preventDefault();
+            // Olayı sakla ki sonra tetikleyebilelim
+            deferredPrompt = e;
+            // Yükleme kartını görünür yap
+            if (installCard) installCard.style.display = 'block';
+            
+            // Lucide ikonlarını tekrar tara (yeni eklenen download ikonu için)
+            if (window.lucide) lucide.createIcons();
+        });
+
+        async function installPWA() {
+            if (!deferredPrompt) return;
+            
+            // Yükleme istemini göster
+            deferredPrompt.prompt();
+            
+            // Kullanıcının yanıtını bekle
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Kullanıcı yükleme tercihi: ${outcome}`);
+            
+            if (outcome === 'accepted') {
+                if (installCard) installCard.style.display = 'none';
+            }
+            
+            // İstem bir kez kullanılabilir, temizle
+            deferredPrompt = null;
+        }
+
+        // Paylaşım Fonksiyonu
+        async function shareProfile() {
+            const totalPushups = document.getElementById('profile-total-pushups').innerText;
+            const totalSessions = document.getElementById('total-sessions').innerText;
+            const displayName = document.getElementById('display-name').innerText;
+
+            // Paylaşılacak metin taslağı
+            const shareData = {
+                title: 'AthleticoCore Sporcu Profili',
+                text: `💪 AthleticoCore'da ${displayName} profilini incele!\n\n` +
+                    `📊 Toplam Şınav: ${totalPushups}\n` +
+                    `🔥 Antrenman Sayısı: ${totalSessions}\n` +
+                    `🚀 Sen de bana katıl ve sınırlarını zorla!`,
+                url: window.location.origin // Uygulamanın ana sayfa linki
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                    console.log('Başarıyla paylaşıldı');
+                } else {
+                    // Web Share API desteklenmiyorsa (Masaüstü Chrome vb.)
+                    showMsg("Tarayıcınız paylaşımı desteklemiyor. Link kopyalandı!");
+                    navigator.clipboard.writeText(shareData.text + " " + shareData.url);
+                }
+            } catch (err) {
+                console.log('Paylaşım hatası veya iptal:', err);
+            }
+        }
+
+        // Butona tıklama olayını bağla
+        document.getElementById('share-btn').addEventListener('click', shareProfile);
+
+        
+        // Uygulama yüklendiğinde kartı gizle
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('Uygulama başarıyla yüklendi');
+            if (installCard) installCard.style.display = 'none';
+        });
+        function initTheme() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', saved);
+            document.getElementById('theme-icon').setAttribute('data-lucide', saved === 'dark' ? 'sun' : 'moon');
+            lucide.createIcons();
+        }
+        document.getElementById('theme-btn').addEventListener('click', () => {
+            const current = document.body.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', target);
+            localStorage.setItem('theme', target);
+            initTheme();
+        });
+        async function loadProfile() {
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                if (!user) {
+                    window.location.href = 'giris.html';
+                    return;
+                }
+                const fullName = user.user_metadata.full_name || "Sporcu";
+                const email = user.email;
+                document.getElementById('display-name').innerText = fullName;
+                document.getElementById('display-email').innerText = email;
+                document.getElementById('input-fullname').value = fullName;
+                const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+                document.getElementById('avatar-initials').innerText = initials.substring(0, 2);
+                const { data: sessions, error } = await sb
+                    .from('workout_sessions')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .eq('completed', true)
+                    .order('started_at', { ascending: true });
+
+                if (error) throw error;
+
+                let totalPushups = 0;
+                let totalSecs = 0;
+                if (sessions) {
+                    sessions.forEach(s => {
+                        totalPushups += (s.push || 0);
+                        totalSecs += (s.duration || 0);
+                    });
+                    document.getElementById('profile-total-pushups').innerText = totalPushups;
+                    document.getElementById('total-sessions').innerText = sessions.length;
+                    document.getElementById('total-minutes').innerText = Math.round(totalSecs / 60);
+                }
+
+            } catch (err) {
+                console.error("Yükleme hatası:", err);
+            }
+        }
+
+        document.getElementById('update-profile-btn').addEventListener('click', async () => {
+            const newName = document.getElementById('input-fullname').value;
+            const btn = document.getElementById('update-profile-btn');
+            btn.disabled = true;
+            btn.innerText = "Güncelleniyor...";
+
+            try {
+                const { error } = await sb.auth.updateUser({
+                    data: { full_name: newName }
+                });
+
+                if (error) throw error;
+                
+                showMsg("Profil başarıyla güncellendi!");
+                loadProfile(); // UI Tazele
+            } catch (err) {
+                showMsg("Hata: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="save" style="width:18px;"></i> Ayarları Kaydet';
+                lucide.createIcons();
+            }
+        });
+
+        // Çıkış Yap
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await sb.auth.signOut();
+            window.location.href = 'giris.html';
+        });
+
+        function showMsg(text) {
+            const box = document.getElementById('msg-box');
+            box.innerText = text;
+            box.style.display = 'block';
+            setTimeout(() => { box.style.display = 'none'; }, 3000);
+        }
+
+        window.onload = () => {
+            initTheme();
+            loadProfile();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AthleticoCoach – Ana Menü</title>
+    <meta name="description" content="Motivasyon beklemeden antrenman yapanlar için sade ve dürüst bir spor uygulaması. Şınav takibi, istatistikler ve devamlılık.">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKGT70JY2E"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AC Core">
+    <link rel="apple-touch-icon" href="assets/icons/ac.png">
+    <meta name="theme-color" content="#000000">
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PKGT70JY2E');
+    </script>
+    <link rel="icon" type="image/png" href="assets/icons/ac.png?v=1">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL    = import.meta.env.SUPABASE_URL;
+        const SUPABASE_ANON_KEY = import.meta.env.SUPABASE_ANON_KEY;
+        window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #111111;
+            --accent-color: #0070f3;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --border-color: #222222;
+            --nav-bg: rgba(10, 10, 10, 0.95);
+            --header-bg: rgba(0, 0, 0, 0.8);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --header-height: 70px;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --accent-color: #0070f3;
+            --text-main: #000000;
+            --text-dim: #666666;
+            --border-color: #e5e5e7;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+            --header-bg: rgba(245, 245, 247, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 100px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: var(--header-height);
+            background: var(--header-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+            color: var(--accent-color);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .icon-btn:active { transform: scale(0.95); }
+
+        .content { padding: 20px; max-width: 600px; margin: 0 auto; }
+
+        .hero h2 { font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 25px; line-height: 1.2; }
+
+        /* Stats Cards */
+        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .stat-label { font-size: 0.7rem; color: var(--text-dim); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; }
+        .goal-card { grid-column: span 2; display: flex; align-items: center; gap: 20px; }
+        .progress-box { position: relative; width: 65px; height: 65px; }
+        .progress-svg { transform: rotate(-90deg); width: 65px; height: 65px; }
+        .progress-bg { fill: none; stroke: var(--border-color); stroke-width: 4; }
+        .progress-bar { fill: none; stroke: var(--accent-color); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 188.5; stroke-dashoffset: 188.5; transition: stroke-dashoffset 0.8s ease; }
+        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.8rem; font-weight: 800; }
+        .chart-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .header-brand { display: flex; align-items: center; gap: 10px; }
+        .header-brand h1 { font-size: 1.1rem; font-weight: 800; }
+        .start-btn { 
+            position: fixed; bottom: 110px; left: 20px; right: 20px; max-width: 560px; margin: 0 auto;
+            background: var(--accent-color); color: white; border: none; padding: 18px; border-radius: 20px;
+            font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 112, 243, 0.3); cursor: pointer; z-index: 100;
+            transition: var(--transition);
+        }
+        .start-btn:active { transform: scale(0.98); }
+        .bottom-nav { position:fixed; bottom:25px; left:50%; transform:translateX(-50%); width:calc(100% - 40px); max-width:400px; background:var(--nav-bg); backdrop-filter: blur(20px); display:flex; justify-content:space-between; align-items:center; padding:10px 15px; border-radius:24px; border:1px solid var(--border-color); z-index:2000; }
+        .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--text-dim); text-decoration:none; font-size:0.6rem; font-weight:700; }
+        .nav-item i { width:20px; height:20px; }
+        .nav-item.active { color:var(--text-main); }
+        .ac-btn {
+            width: 28px;
+            height: 28px;
+            background: var(--text-main);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-color);
+            font-weight: 900;
+            font-size: 0.7rem;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .ac-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Skeleton Loading Temel Ayarları */
+        .skeleton {
+            position: relative;
+            overflow: hidden;
+            background-color: var(--border-color); /* Varsayılan arka plan */
+            color: transparent !important; /* Yüklenirken içindeki "0" görünmesin */
+            border-radius: 6px;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* Işıltı (Shimmer) Efekti */
+        .skeleton::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.1) 50%, /* Dark mod için parlama */
+                transparent 100%
+            );
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Light Mod İçin Özel Parlama Rengi */
+        [data-theme="light"] .skeleton::after {
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(0, 0, 0, 0.05) 50%, /* Light mod için parlama */
+                transparent 100%
+            );
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Yükseklik/Genişlik sabitlemeleri (Metin yerine kutu görünmesi için) */
+        .stat-value.skeleton {
+            display: inline-block;
+            min-width: 60px; /* Rakam yüklenene kadar bir genişlik kapla */
+            min-height: 1.8rem;
+            vertical-align: middle;
+        }
+
+    </style>
+</head>
+<body data-theme="dark">
+
+    <header>
+        <div class="header-brand">
+            <button class="ac-btn" onclick="window.location.href='index.html'">
+                AC
+            </button>
+
+            <h1 >AthleticoCore</h1>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="toggleTheme()">
+                <i data-lucide="sun" id="theme-icon"></i>
+            </button>
+            <button class="icon-btn" onclick="window.location.href='profile.html'">
+                <i data-lucide="user"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="content">
+        <section class="hero">
+            <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom: 5px;" id="welcome-msg">Hoş geldin!</p> 
+            <h2 id="greeting-text">Hadi bugün şınav hedefini tamamlayalım.</h2>
+        </section>
+
+        <section class="quick-stats">
+            <div class="stat-card">
+                <span class="stat-label skeleton">Toplam</span>
+                <span class="stat-value skeleton" id="total-pushups">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label skeleton">En İyi Seri</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="stat-value skeleton" id="best-session">0</span>
+                    <i data-lucide="flame" style="color:#ff9500; width:20px;"></i>
+                </div>
+            </div>
+
+            <div class="stat-card goal-card">
+                <div class="progress-box">
+                    <svg class="progress-svg">
+                        <circle class="progress-bg" cx="32.5" cy="32.5" r="30"></circle>
+                        <circle class="progress-bar" id="goal-bar" cx="32.5" cy="32.5" r="30"></circle>
+                    </svg>
+                    <div class="progress-text" id="goal-percent">0%</div>
+                </div>
+                <div>
+                    <span class="stat-label">Günlük Hedef</span>
+                    <div style="display: flex; align-items: baseline; gap: 5px;">
+                        <span class="stat-value" id="today-count">0</span>
+                        <span style="color:var(--text-dim); font-size:0.9rem; font-weight:600;">/ 50</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="chart-card">
+            <span class="stat-label" style="margin-bottom:15px;">Haftalık İlerleme</span>
+            <div id="main-chart" class="skeleton" style="min-height: 180px; border-radius: 12px;"></div>
+        </div>
+
+        <button class="start-btn" onclick="window.location.href='coach.html'">
+            <i data-lucide="play" fill="currentColor"></i> Antrenmana Başla
+        </button>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <i data-lucide="home"></i>
+            <span>Ana Sayfa</span>
+        </a>
+        <a href="coach.html" class="nav-item">
+            <i data-lucide="activity"></i>
+            <span>AI PushUp</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <i data-lucide="bar-chart-3"></i>
+            <span>Analiz</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i data-lucide="user-round"></i>
+            <span>Profil</span>
+        </a>
+        <a href="ayarlar.html" class="nav-item">
+            <i data-lucide="settings"></i>
+            <span>Ayarlar</span>
+        </a>
+    </nav>
+
+<script>
+let chart = null;
+
+function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute("data-theme");
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+
+    body.setAttribute("data-theme", nextTheme);
+    const icon = document.getElementById("theme-icon");
+    icon.setAttribute("data-lucide", nextTheme === "dark" ? "sun" : "moon");
+    lucide.createIcons();
+    const chartEl = document.querySelector("#main-chart");
+    if (chart && chartEl) {
+    }
+}
+
+async function loadDashboard() {
+    try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) {
+
+            window.location.href = 'giris.html';
+            console.log("Kullanıcı oturumu yok.");
+            return;
+        }
+        const { data: sessions, error } = await sb
+            .from('workout_sessions')
+            .select('push, started_at')
+            .eq('user_id', user.id)
+            .eq('completed', true)
+            .order('started_at', { ascending: true }); // Tarihe göre eskiden yeniye
+
+        if (error) throw error;
+
+        // 3. İstatistikleri Hesapla
+        let totalPushups = 0;
+        let maxSession = 0;
+        let todayPushups = 0;
+        
+        // Tarih formatı: YYYY-MM-DD
+        const todayStr = new Date().toISOString().slice(0, 10);
+        
+        // Haftalık grafik için veri haritası (Son 7 gün)
+        const weeklyMap = {};
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            weeklyMap[d.toISOString().slice(0, 10)] = 0;
+        }
+        // loadDashboard fonksiyonunun içindeki goal kontrol kısmına ekle:
+        if (todayPushups >= GOAL) {
+            document.getElementById("greeting-text").innerText = "Tebrikler! Günlük hedefini tamamladın. 🔥";
+            triggerHaptic('success'); // Hedef bittiğinde telefon titresin!
+        }6
+        if (sessions && sessions.length > 0) {
+            sessions.forEach(session => {
+                const count = session.push || 0;
+                const dateStr = session.started_at.slice(0, 10); // Sadece tarihi al (saati at)
+
+                // A) Toplam Şınav
+                totalPushups += count;
+
+                // B) En İyi Seri (Tek seferde en çok yapılan)
+                if (count > maxSession) {
+                    maxSession = count;
+                }
+
+                // C) Bugün Yapılan
+                if (dateStr === todayStr) {
+                    todayPushups += count;
+                }
+
+                // D) Grafik Verisi (Eğer tarih son 7 gün içindeyse)
+                if (weeklyMap.hasOwnProperty(dateStr)) {
+                    weeklyMap[dateStr] += count;
+                }
+            });
+        }
+
+        // 4. UI Güncelleme
+
+        // Toplam Şınav
+        animateValue("total-pushups", 0, totalPushups, 1000);
+
+        // En İyi Seri
+        animateValue("best-session", 0, maxSession, 1000);
+
+        // Günlük Hedef & Progress Bar
+        const GOAL = 50;
+        document.getElementById("today-count").innerText = todayPushups;
+        
+        const percent = Math.min(Math.round((todayPushups / GOAL) * 100), 100);
+        document.getElementById("goal-percent").innerText = percent + "%";
+        
+        // Çember animasyonu (188.5, çemberin çevresi)
+        const offset = 188.5 - (188.5 * percent) / 100;
+        setTimeout(() => {
+            document.getElementById("goal-bar").style.strokeDashoffset = offset;
+        }, 100);
+
+        if (todayPushups >= GOAL) {
+            document.getElementById("greeting-text").innerText = "Tebrikler! Günlük hedefini tamamladın. 🔥";
+        }
+
+        // 5. Grafiği Çiz
+        renderChart(weeklyMap);
+
+        removeSkeletons();
+    } catch (err) {
+        console.error("Veri yüklenirken hata oluştu:", err);
+        // Hata olsa bile skeletonları kaldırmalıyız ki sonsuza kadar dönmesin
+        removeSkeletons();
+    }
+}
+
+function removeSkeletons() {
+    // Statik verilerdeki skeletonları kaldır
+    const elements = document.querySelectorAll('.skeleton');
+    elements.forEach(el => {
+        el.classList.remove('skeleton');
+        
+        // Eğer bu bir chart ise, style niteliğini temizle (min-height kalabilir ama background gitmeli)
+        if(el.id === 'main-chart') {
+            el.style.backgroundColor = 'transparent'; 
+        }
+    });
+}
+/* =========================
+   GRAFİK FONKSİYONLARI
+========================= */
+function renderChart(dataMap) {
+    const isLight = document.body.getAttribute("data-theme") === "light";
+    
+    // Veriyi ApexCharts formatına çevir
+    // dataMap anahtarları: "2023-10-27", "2023-10-28" ...
+    const categories = Object.keys(dataMap).map(dateStr => {
+        // Tarihi gün ismine çevir (Örn: "Pzt")
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('tr-TR', { weekday: 'short' });
+    });
+    
+    const seriesData = Object.values(dataMap);
+
+    const options = {
+        series: [{ name: "Şınav", data: seriesData }],
+        chart: {
+            type: "area",
+            height: 180,
+            toolbar: { show: false },
+            background: "transparent",
+            fontFamily: 'Inter, sans-serif'
+        },
+        colors: ["#0070f3"],
+        stroke: { curve: "smooth", width: 3 },
+        xaxis: {
+            categories: categories,
+            labels: {
+                style: {
+                    colors: isLight ? "#666" : "#888",
+                    fontWeight: 600,
+                    fontSize: '10px'
+                }
+            },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+        },
+        yaxis: { show: false },
+        grid: { show: false, padding: { left: 10, right: 10 } },
+        dataLabels: { enabled: false },
+        fill: {
+            type: "gradient",
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.4,
+                opacityTo: 0.05,
+                stops: [0, 100]
+            }
+        },
+        tooltip: { 
+            theme: isLight ? "light" : "dark",
+            y: { formatter: (val) => val + " Şınav" }
+        }
+    };
+
+    if (chart) chart.destroy();
+    
+    const chartEl = document.querySelector("#main-chart");
+    if(chartEl) {
+        chart = new ApexCharts(chartEl, options);
+        chart.render();
+    }
+}
+
+// Cihazın titreşim desteği olup olmadığını kontrol et ve titreti
+function triggerHaptic(type = 'light') {
+    if (!("vibrate" in navigator)) return; // Desteklemiyorsa çık
+
+    if (type === 'success') {
+        navigator.vibrate([100, 50, 100]); // Başarı durumunda dıt-dıt
+    } else {
+        navigator.vibrate(50); // Hafif dokunuş
+    }
+}
+
+function animateValue(id, start, end, duration) {
+    if (start === end) {
+        const obj = document.getElementById(id);
+        if(obj) obj.innerText = end;
+        return;
+    }
+    const range = end - start;
+    let current = start;
+    const increment = end > start ? 1 : -1;
+    const stepTime = Math.abs(Math.floor(duration / range));
+    const obj = document.getElementById(id);
+    
+    if (!obj) return;
+
+    const timer = setInterval(function() {
+        current += increment;
+        obj.innerText = current;
+        if (current == end) {
+            clearInterval(timer);
+        }
+    }, Math.max(stepTime, 10)); // Çok hızlı olmaması için min 10ms
+}
+
+/* =========================
+   BAŞLANGIÇ
+========================= */
+window.onload = () => {
+    // Varsayılan tema (veya localStorage'dan alınabilir)
+    document.body.setAttribute("data-theme", "dark");
+    
+    // İkonları oluştur
+    lucide.createIcons();
+    
+    // Verileri Yükle
+    loadDashboard();
+};
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('PWA Service Worker kayıt edildi:', reg.scope))
+            .catch(err => console.log('PWA Hatası:', err));
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Blog Editor</title>
+
+<style>
+:root {
+  --bg: #0e0e0e;
+  --card: #161616;
+  --text: #eaeaea;
+  --muted: #9a9a9a;
+  --accent: #3b82f6;
+}
+
+.light {
+  --bg: #f5f5f5;
+  --card: #ffffff;
+  --text: #111;
+  --muted: #555;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  padding: 20px;
+}
+
+.file-input {
+  margin: 10px 0;
+  padding: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px dashed var(--muted);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.file-input::file-selector-button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.file-input::file-selector-button:hover {
+  opacity: 0.85;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--text);
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 15px;
+}
+
+input, textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--text);
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.post {
+  padding: 10px;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+
+.post:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+#preview {
+  margin-top: 15px;
+  padding: 15px;
+  background: #00000033;
+  border-radius: 8px;
+}
+
+pre {
+  background: #000;
+  padding: 10px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+code {
+  color: #9effc8;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>Blog Editörü</h2>
+  <button class="secondary" onclick="toggleTheme()">🌗 Tema</button>
+</header>
+
+<div class="container">
+
+  <!-- SOL: POST LİSTESİ -->
+  <div class="card">
+    <h3>Postlar</h3>
+
+    <div id="postList"></div>
+    <input type="file" accept=".json" class="file-input" onchange="loadJson(event)">
+
+    <button onclick="downloadJson()" style="margin-top:10px">JSON İndir</button>
+  </div>
+
+  <!-- SAĞ: EDİTÖR -->
+  <div class="card">
+    <input id="title" placeholder="Başlık">
+    <input id="author" placeholder="Yazar">
+    <input id="date" placeholder="Tarih (31.12.2025)">
+    <input id="excerpt" placeholder="Kısa açıklama">
+    <textarea id="body" placeholder="Markdown içerik"></textarea>
+
+    <button onclick="savePost()">Kaydet</button>
+    <button class="secondary" onclick="togglePreview()">Preview Aç / Kapat</button>
+    <div style="display:flex; gap:8px; margin-top:10px">
+        <button class="secondary" onclick="newPost()">Yeni Post</button>
+        <button class="secondary" onclick="cancelEdit()">İptal</button>
+        <button onclick="deletePost()" style="background:#dc2626">Sil</button>
+    </div>
+
+    <div id="preview" style="display:none"></div>
+
+
+
+  </div>
+
+
+
+
+</div>
+
+<script>
+let posts = [];
+let editingId = null;
+let previewOpen = false;
+
+function renderMarkdown(text) {
+  return text
+    .replace(/```([\s\S]*?)```/gim, '<pre><code>$1</code></pre>')
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+    .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+    .replace(/\n/gim, '<br>');
+}
+
+function renderPosts() {
+  postList.innerHTML = '';
+  posts.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'post';
+    div.innerHTML = `<strong>${p.title}</strong><br><small>${p.date} – ${p.author}</small>`;
+    div.onclick = () => loadPost(p.id);
+    postList.appendChild(div);
+  });
+}
+
+function loadPost(id) {
+  const p = posts.find(x => x.id === id);
+  editingId = id;
+  title.value = p.title;
+  author.value = p.author;
+  date.value = p.date;
+  excerpt.value = p.excerpt;
+  body.value = p.body;
+  updatePreview();
+}
+
+function savePost() {
+  const data = {
+    title: title.value,
+    author: author.value,
+    date: date.value,
+    excerpt: excerpt.value,
+    body: body.value
+  };
+
+  if (!title.value || !body.value) {
+    alert("Başlık ve içerik boş olamaz");
+    return;
+  }
+
+
+  if (editingId) {
+    Object.assign(posts.find(p => p.id === editingId), data);
+  } else {
+    posts.unshift({ id: Date.now(), ...data });
+  }
+
+  clearForm();
+  renderPosts();
+}
+
+function clearForm() {
+  editingId = null;
+  title.value = author.value = date.value = excerpt.value = body.value = '';
+}
+
+function togglePreview() {
+  previewOpen = !previewOpen;
+  preview.style.display = previewOpen ? 'block' : 'none';
+  updatePreview();
+}
+
+function updatePreview() {
+  if (!previewOpen) return;
+  preview.innerHTML = `
+    <h2>${title.value}</h2>
+    <small>${date.value} – ${author.value}</small>
+    <p>${excerpt.value}</p>
+    <hr>
+    ${renderMarkdown(body.value)}
+  `;
+}
+
+body.addEventListener('input', updatePreview);
+
+function downloadJson() {
+  const blob = new Blob([JSON.stringify(posts, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'blog.json';
+  a.click();
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('light');
+}
+</script>
+
+<script>
+function loadJson(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      if (!Array.isArray(data)) {
+        alert("Geçersiz JSON formatı");
+        return;
+      }
+
+      posts = data;
+      editingId = null;
+      renderPosts();
+      clearForm();
+
+    } catch (err) {
+      alert("JSON okunamadı");
+    }
+  };
+  reader.readAsText(file);
+}
+
+
+function newPost() {
+  editingId = null;
+  clearForm();
+  preview.innerHTML = '';
+}
+
+function cancelEdit() {
+  if (
+    title.value ||
+    body.value ||
+    excerpt.value
+  ) {
+    const ok = confirm("Değişiklikler kaybolacak. Emin misin?");
+    if (!ok) return;
+  }
+  clearForm();
+  preview.innerHTML = '';
+}
+
+function deletePost() {
+  if (!editingId) {
+    alert("Silinecek post seçili değil");
+    return;
+  }
+
+  const ok = confirm("Bu post kalıcı olarak silinecek. Emin misin?");
+  if (!ok) return;
+
+  posts = posts.filter(p => p.id !== editingId);
+  editingId = null;
+  clearForm();
+  renderPosts();
+  preview.innerHTML = '';
+}
+
+</script>
+
+
+</body>
+</html>

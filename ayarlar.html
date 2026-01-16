@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AthleticoCore - Ayarlar</title>
+    <link rel="icon" type="image/png" href="assets/icons/ac.png?v=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+    const SUPABASE_URL    = import.meta.env.SUPABASE_URL;
+    const SUPABASE_ANON_KEY = import.meta.env.SUPABASE_ANON_KEY;
+    const supabase = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+    </script>
+
+        <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKGT70JY2E"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PKGT70JY2E');
+    </script>
+
+    
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0a0a0a;
+            --accent-color: #0070f3;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --border-color: #1a1a1a;
+            --danger: #ff4444;
+            --safe: #00ff88;
+            --nav-bg: rgba(10, 10, 10, 0.8);
+        }
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0a0a0a;
+            --accent-color: #0070f3;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --border-color: #1a1a1a;
+            --danger: #ff4444;
+            --safe: #00ff88;
+            --nav-bg: rgba(10, 10, 10, 0.8);
+        }
+
+        /* LİGHT TEMA STİLLERİ EKLE */
+        body[data-theme="light"] {
+            --bg-color: #ffffff;
+            --card-bg: #f5f5f7;
+            --accent-color: #0070f3;
+            --text-main: #000000;
+            --text-dim: #666666;
+            --border-color: #e0e0e0;
+            --danger: #ff4444;
+            --safe: #00aa66;
+            --nav-bg: rgba(245, 245, 247, 0.8);
+        }
+
+        body[data-theme="light"] .row-icon {
+            background: rgba(0, 112, 243, 0.15);
+        }
+
+        body[data-theme="light"] .setting-card {
+            border-color: var(--border-color);
+        }
+
+        body[data-theme="light"] .setting-row:active {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        body[data-theme="light"] .timeline-dot {
+            box-shadow: 0 0 0 2px var(--card-bg);
+        }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            padding: 50px 20px 20px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+        .lang-select {
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 14px;
+            outline: none;
+        }
+        .menu-trigger {
+            background: none;
+            border: none;
+            color: white;
+            padding: 0;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .blog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sort-btn {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-main);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .blog-meta {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+
+        .blog-author {
+            font-weight: 500;
+        }
+
+
+        .read-more {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--accent);
+            cursor: pointer;
+        }
+
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+        .fullscreen-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 2000;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .fullscreen-panel.active {
+            transform: translateX(0);
+        }
+
+        .blog-section {
+            margin-top: 24px;
+        }
+
+        .blog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .blog-post {
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .blog-date {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+
+        .blog-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .workout-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #222;
+        }
+
+        .workout-item .left span {
+            display: block;
+            font-size: 12px;
+            color: #888;
+        }
+        .sort-bar {
+        padding: 8px 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sort-bar select {
+        width: 100%;
+        background: transparent;
+        color: var(--text-primary, #fff);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 14px;
+        outline: none;
+        }
+
+        /* Hover / focus */
+        .sort-bar select:focus {
+        border-color: #3b82f6;
+        }
+
+        /* Light tema */
+        body[data-theme="light"] .sort-bar {
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+
+        body[data-theme="light"] .sort-bar select {
+        color: #111;
+        border-color: rgba(0,0,0,0.15);
+        }
+
+        /* Ok ikonunu gizlemeden sadeleştir */
+        .sort-bar select option {
+        background: #111;
+        color: #fff;
+        }
+
+        body[data-theme="light"] .sort-bar select option {
+        background: #fff;
+        color: #111;
+        }
+
+        .workout-item .right span {
+            display: block;
+            text-align: right;
+        }
+
+        .blog-excerpt {
+            font-size: 13px;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .panel-header {
+            padding: 50px 20px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            margin-right: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .panel-content {
+            padding: 25px 20px;
+            flex-grow: 1;
+        }
+        .settings-container { padding: 10px 20px; }
+        .group-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 25px 0 10px 5px;
+        }
+        .setting-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .setting-row {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .setting-row:active { background: #151515; }
+        .setting-row:last-child { border-bottom: none; }
+        .row-icon {
+            width: 36px; height: 36px;
+            background: rgba(0, 112, 243, 0.1);
+            color: var(--accent-color);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 15px;
+        }
+        .row-info { flex-grow: 1; }
+        .row-title { font-size: 0.95rem; font-weight: 600; display: block; }
+        .row-desc { font-size: 0.75rem; color: var(--text-dim); }
+        .switch {
+            position: relative; display: inline-block;
+            width: 44px; height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333; transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px;
+            left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        .status-pill {
+            font-size: 0.7rem; font-weight: 700;
+            padding: 4px 10px; border-radius: 20px;
+            background: #111; color: var(--text-dim);
+        }
+        .status-pill.connected { background: rgba(0, 255, 136, 0.1); color: var(--safe); }
+        .bottom-nav { 
+            position:fixed; bottom:25px; left:50%; transform:translateX(-50%); 
+            width:calc(100% - 40px); max-width:400px; 
+            background:var(--nav-bg); backdrop-filter: blur(20px); 
+            display:flex; justify-content:space-between; align-items:center; 
+            padding:10px 15px; border-radius:24px; border:1px solid var(--border-color); 
+            z-index:100; 
+        }
+        .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--text-dim); text-decoration:none; font-size:0.6rem; font-weight:700; }
+        .nav-item i { width:20px; height:20px; }
+        .nav-item.active { color:var(--text-main); }
+        .text-content { line-height: 1.6; color: var(--text-dim); font-size: 0.95rem; }
+        .text-content b { color: var(--text-main); }
+        .dev-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+        .dev-avatar {
+            width: 60px; height: 60px; border-radius: 50%; 
+            background: #222; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; border: 2px solid var(--border-color);
+        }
+        .dev-avatar i { color: #555; }
+        .dev-info h3 { margin: 0; font-size: 1.1rem; color: var(--text-main); font-weight: 700; }
+        .dev-info span { font-size: 0.8rem; color: var(--accent-color); font-weight: 600; letter-spacing: 0.5px; }
+        .dev-socials { display: flex; gap: 12px; margin-top: 8px; }
+        .social-link { color: var(--text-dim); transition: 0.2s; cursor: pointer; }
+        .social-link:hover { color: var(--text-main); }
+        .timeline-section h4 {
+            font-size: 0.9rem; text-transform: uppercase; color: var(--text-dim);
+            letter-spacing: 1px; margin: 30px 0 15px 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        }
+        .timeline-container { position: relative; padding-left: 20px; border-left: 2px solid var(--border-color); margin-left: 10px; }
+        .timeline-item { position: relative; margin-bottom: 30px; }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-dot {
+            position: absolute; left: -27px; top: 2px; width: 12px; height: 12px;
+            border-radius: 50%; background: var(--accent-color); border: 2px solid var(--bg-color); box-shadow: 0 0 0 2px var(--card-bg);
+        }
+        .timeline-dot.future { background: var(--card-bg); border: 2px solid var(--text-dim); }
+        .timeline-date { font-size: 0.75rem; color: var(--accent-color); font-weight: 700; margin-bottom: 4px; display: block; }
+        .timeline-content h5 { margin: 0; font-size: 0.95rem; color: var(--text-main); }
+        .timeline-content p { margin: 5px 0 0; font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; }
+        .changelog-container { margin-top: 15px; }
+        .changelog-item {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 20px; margin-bottom: 15px;
+        }
+        .changelog-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .version-tag {
+            font-size: 0.9rem; font-weight: 800;
+            background: rgba(0, 112, 243, 0.2); color: var(--accent-color);
+            padding: 4px 10px; border-radius: 6px;
+        }
+        .version-tag.dimmed { background: rgba(255,255,255,0.1); color: var(--text-dim); }
+        .version-date { font-size: 0.75rem; color: var(--text-dim); }
+        .changelog-list { margin: 0; padding-left: 20px; color: var(--text-dim); font-size: 0.85rem; line-height: 1.6; }
+        .changelog-list li { margin-bottom: 6px; }
+        .changelog-list li:last-child { margin-bottom: 0; }
+
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="menu-trigger" onclick="openPanel('main-menu')">
+            <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            >
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        
+    <span class="page-title">Ayarlar</span>
+</div>
+
+    <div class="settings-container">
+        <div class="group-label">Görünüm & Deneyim</div>
+        <div class="setting-card">
+            <div class="setting-row">
+                <div class="row-icon"><i id="theme-icon" data-lucide="moon"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Karanlık Mod</span>
+                    <span class="row-desc">Göz yorgunluğunu azaltın</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked onchange="toggleTheme()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <div class="row-icon"><i data-lucide="volume-2"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Sesli Koç Desteği</span>
+                    <span class="row-desc">Antrenman sırasında tekrar sesini aç / kapat</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked id="voice-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <div class="row-icon"><i data-lucide="languages"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Koç Dili</span>
+                    <span class="row-desc">Sesli koçun konuşma dili</span>
+                </div>
+
+                <select id="language-select" class="lang-select">
+                    <option value="tr">🇹🇷 Türkçe</option>
+                    <option value="en">🇬🇧 English</option>
+                </select>
+            </div>
+        <div class="group-label">Hesap & Destek</div>
+        <div class="setting-card">
+            <div class="setting-row" onclick="window.location.href='profile.html'">
+                <div class="row-icon"><i data-lucide="user"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Profil Bilgileri</span>
+                    <span class="row-desc">Kilo, boy ve hedef ayarları</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+
+            <div class="setting-row premium" onclick="window.location.href='premium.html'">
+                <div class="row-icon"><i data-lucide="crown"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Premium’a Geç</span>
+                    <span class="row-desc">Tüm özelliklerin kilidini aç</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+            <div class="setting-row" onclick="openPanel('invite-panel')">
+                <div class="row-icon"><i data-lucide="user-plus"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Arkadaşını Davet Et</span>
+                    <span class="row-desc">Arkadaşını bu dünyaya davet etmeye ne dersin?</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+            
+            <div class="setting-row" onclick="openPanel('help-panel')">
+                <div class="row-icon"><i data-lucide="help-circle"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Yardım Merkezi</span>
+                    <span class="row-desc">Sıkça sorulan sorular ve destek</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+        </div>
+    </div>
+    <div id="main-menu" class="fullscreen-panel">
+        <div class="panel-header">
+            <button class="back-btn" onclick="closePanel('main-menu')">
+                <i data-lucide="arrow-left"></i>
+            </button>
+            <span class="panel-title">Menü</span>
+        </div>
+        <div class="panel-content" style="display:flex; flex-direction:column; height:100%;">
+        <div class="setting-card">
+            <div class="setting-row" onclick="openPanel('about-panel')">
+                <div class="row-icon"><i data-lucide="info"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Hakkında</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+
+            <div class="setting-row" onclick="openPanel('dev-panel')">
+                <div class="row-icon"><i data-lucide="terminal"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Geliştirici & Süreç</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+
+            <div class="setting-row" onclick="openPanel('coach-panel')">
+                <div class="row-icon"><i data-lucide="user"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Koç Ayarları</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+
+            <div class="setting-row" onclick="openPanel('antrenman-panel')">
+                <div class="row-icon">
+                    <i data-lucide="dumbbell"></i>
+                </div>
+                <div class="row-info">
+                    <span class="row-title">Antrenman Geçmişi</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+
+        </div>
+
+        <!-- GERİ BİLDİRİM -->
+        <div class="group-label">Destek</div>
+        <div class="setting-card">
+            <div class="setting-row" onclick="openPanel('feedback-panel')">
+                <div class="row-icon"><i data-lucide="message-square"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Geri Bildirim</span>
+                    <span class="row-desc">Öneri ve görüşlerini paylaş</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+
+            <div class="setting-row" onclick="openPanel('bug-panel')">
+                <div class="row-icon"><i data-lucide="bug"></i></div>
+                <div class="row-info">
+                    <span class="row-title">Hata Bildir</span>
+                    <span class="row-desc">Karşılaştığın sorunları ilet</span>
+                </div>
+                <i data-lucide="chevron-right" size="18" color="#444"></i>
+            </div>
+        </div>
+
+        <!-- SÜRÜM -->
+        <div style="margin-top: 30px; text-align: center;">
+            <p style="font-size:0.65rem; color:#444; text-transform:uppercase; letter-spacing:1px;">
+                Yazılım Sürümü
+            </p>
+            <p style="font-size:0.8rem; color:#888; font-weight:600;">
+                0.1.9-beta
+            </p>
+        </div>
+        <div style="margin-top:auto; padding-bottom:40px;">
+            <button onclick="window.location.href='giris.html'"
+                style="width:100%; padding:18px; background:#111; border:1px solid var(--danger);
+                border-radius:16px; color:var(--danger); font-weight:700;
+                display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer;">
+                <i data-lucide="log-out" size="20"></i>
+                Oturumu Kapat
+            </button>
+        </div>
+        </div>
+    </div>
+    <div id="feedback-panel" class="fullscreen-panel">
+    <div class="panel-header">
+        <button class="back-btn" onclick="closePanel('feedback-panel')">
+        <i data-lucide="arrow-left"></i>
+        </button>
+        <span class="panel-title">Geri Bildirim</span>
+    </div>
+
+    <div class="panel-content">
+        <div class="setting-card">
+        <div class="setting-row" style="cursor:default;">
+            <div class="row-info">
+            <span class="row-title">Görüşün</span>
+            <textarea id="feedback-text"
+                placeholder="Ne iyi, ne kötü, ne eksik? Açık yaz."
+                style="
+                width:100%; margin-top:10px; min-height:120px;
+                background:#111; border:1px solid var(--border-color);
+                border-radius:12px; padding:12px; color:white;
+                resize:none;">
+            </textarea>
+            </div>
+        </div>
+        </div>
+
+        <button onclick="submitFeedback('feedback')"
+        style="margin-top:20px; width:100%; padding:16px;
+        background:var(--accent-color); border:none; border-radius:14px;
+        font-weight:700; cursor:pointer;">
+        Gönder
+        </button>
+    </div>
+    </div>
+    <div id="bug-panel" class="fullscreen-panel">
+    <div class="panel-header">
+        <button class="back-btn" onclick="closePanel('bug-panel')">
+        <i data-lucide="arrow-left"></i>
+        </button>
+        <span class="panel-title">Hata Bildir</span>
+    </div>
+
+    <div class="panel-content">
+        <div class="setting-card">
+
+        <div class="setting-row" style="cursor:default;">
+            <div class="row-info">
+            <span class="row-title">Hata Açıklaması</span>
+            <textarea id="bug-text"
+                placeholder="Ne yaptın, ne oldu, ne olmalıydı?"
+                style="
+                width:100%; margin-top:10px; min-height:120px;
+                background:#111; border:1px solid var(--border-color);
+                border-radius:12px; padding:12px; color:white;
+                resize:none;">
+            </textarea>
+            </div>
+        </div>
+
+        <div class="setting-row" style="cursor:default;">
+            <div class="row-info">
+            <span class="row-title">Cihaz / Tarayıcı</span>
+            <input id="bug-device"
+                placeholder="Örn: Chrome / Android"
+                style="
+                width:100%; margin-top:10px;
+                background:#111; border:1px solid var(--border-color);
+                border-radius:12px; padding:12px; color:white;">
+            </div>
+        </div>
+
+        </div>
+
+        <button onclick="submitFeedback('bug')"
+        style="margin-top:20px; width:100%; padding:16px;
+        background:var(--danger); border:none; border-radius:14px;
+        font-weight:700; cursor:pointer;">
+        Hata Gönder
+        </button>
+    </div>
+    </div>
+    <div id="antrenman-panel" class="fullscreen-panel">
+    <div class="panel-header">
+        <button class="back-btn" onclick="closePanel('antrenman-panel')">
+            <i data-lucide="arrow-left"></i>
+        </button>
+        <span class="panel-title">Antrenman Geçmişi</span>
+    </div>
+
+    <div class="sort-bar">
+        <select id="workout-sort" onchange="changeWorkoutSort(this.value)">
+            <option value="date_desc">Yeniden → Eskiye</option>
+            <option value="date_asc">Eskiden → Yeniye</option>
+            <option value="pushup_desc">Çok → Az</option>
+            <option value="pushup_asc">Az → Çok</option>
+        </select>
+    </div>
+
+
+    <div id="antrenman-list" class="panel-content">
+        <!-- kayıtlar buraya düşecek -->
+    </div>
+    </div>
+    <div id="about-panel" class="fullscreen-panel">
+        <div class="panel-header">
+            <button class="back-btn" onclick="closePanel('about-panel')">
+                <i data-lucide="arrow-left"></i>
+            </button>
+            <span class="panel-title">Hakkında</span>
+        </div>
+        <div class="panel-content">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #0070f3, #00c6ff); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 10px 30px rgba(0, 112, 243, 0.3);">
+                   <i data-lucide="activity" size="40" color="white"></i>
+                </div>
+                <h2 style="margin: 0; font-size: 1.5rem;">AthleticoCore</h2>
+                <span style="color: var(--text-dim); font-size: 0.9rem;">AI Destekli Spor Asistanı</span>
+            </div>
+            <div class="text-content" style="margin-bottom: 30px; text-align: center;">
+                <p>Yapay zeka teknolojisi ile antrenmanlarınızı bir üst seviyeye taşıyın. AthleticoCore, bilgisayar görüşü kullanarak formunuzu analiz eder, tekrarlarınızı sayar ve size gerçek zamanlı geri bildirim sunar.</p>
+            </div>
+            <div class="setting-card">
+                 <div class="setting-row" style="cursor: default;">
+                    <div class="row-info">
+                        <span class="row-title">Mevcut Sürüm</span>
+                        <span class="row-desc" style="color: var(--safe);">v0.2.0-beta (Public)</span>
+                    </div>
+                     <div style="background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700;">GÜNCEL</div>
+                </div>
+            </div>
+             <div class="group-label" style="margin-top: 30px;">Sürüm Günlüğü</div>
+             <div class="changelog-container">
+                <div class="changelog-item">
+                <div class="changelog-header">
+                    <span class="version-tag">v0.2.0</span>
+                    <span class="version-date">13 Ocak 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>AI Koç perfonmansı arttırıldı.</li>
+                </ul>
+                </div>
+
+                <div class="changelog-item">
+                <div class="changelog-header">
+                    <span class="version-tag">v0.1.9</span>
+                    <span class="version-date">4 Ocak 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>Mobil deneyimde AI Push Up Koçu açılmama sorunu çözüldü.</li>
+                    <li>Antrenman paylaşma seçeneği eklendi.</li>
+                    <li>Arkadaşını davet et eklendi.</li>
+                    <li>Profilde paylaşım özelliği eklendi.</li>
+                    <li>PWA desteği eklendi.</li>
+                    <li>Skeleton Loading eklendi.</li>
+                    <li>ayarlarda kranlık/aydınlık tema geçişi eliştirildi.</li>
+                </ul>
+                </div>
+                <div class="changelog-item">
+                <div class="changelog-header">
+                    <span class="version-tag">v0.1.8</span>
+                    <span class="version-date">1 Ocak 2026</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>İstatistikler ekranı (Stats) yeniden düzenlendi ve index ekranından ayrıştırıldı.</li>
+                    <li>Son 7 güne ait antrenman grafiği düzeltildi ve veri tutarlılığı sağlandı.</li>
+                    <li>Grafik render sorunları giderildi.</li>
+                    <li>Profil sayfası yenilendi</li>
+                    <li>Profil ekranında toplam şınav, antrenman sayısı ve süre hesaplamaları iyileştirildi.</li>
+                    <li>Gereksiz veri çekimleri azaltılarak performans ve maliyet tarafı optimize edildi.</li>
+                    <li>İletişim için e-posta adresi doğrudan gösterilmeden güvenli şekilde açılacak biçimde düzenlendi.</li>
+                    <li>Blog bölümüne “Yılın İlk Günü” ve "AthleticoCoach Nasıl Büyüdü?" yazıları eklendi.</li>
+                    <li>AthleticoCore için favicon eklendi.</li>
+                </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.1.7</span>
+                        <span class="version-date">31 Aralık 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Supabase backend altyapısı canlıya alındı.</li>
+                        <li>Antrenman verileri kullanıcı bazlı ve kalıcı hale getirildi.</li>
+                        <li>Her antrenman ayrı bir oturum (session) olarak kaydediliyor.</li>
+                        <li>Ana dashboard gerçek backend verileriyle çalışıyor.</li>
+                        <li>Veri modeli sadeleştirildi ve doğrulandı.</li>
+                    </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.1.6</span>
+                        <span class="version-date">29 Aralık 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Antrenman kayıt akışındaki kritik hatalar giderildi.</li>
+                        <li>Supabase entegrasyonu öncesi veri modeli stabilize edildi.</li>
+                        <li>Sayaç, süre ve kalori hesaplamaları netleştirildi.</li>
+                    </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.1.5</span>
+                        <span class="version-date">27 Aralık 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Antrenman kayıt sistemi yeniden ele alındı.</li>
+                        <li>Frontend ve veri katmanı arasındaki tutarsızlıklar tespit edildi.</li>
+                        <li>Gelecek backend geçişi için hazırlık yapıldı.</li>
+                    </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.1.4</span>
+                        <span class="version-date">21 Aralık 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Dashboard istatistik hesaplamaları iyileştirildi.</li>
+                        <li>Günlük toplam ve hedef ilerleme mantığı güncellendi.</li>
+                        <li>UI geri bildirimleri sadeleştirildi.</li>
+                    </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.1.3</span>
+                        <span class="version-date">19 Aralık 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Antrenman başlat / bitir akışı stabilize edildi.</li>
+                        <li>Süre ölçümünde yaşanan senkron sorunları giderildi.</li>
+                        <li>Koç geri bildirimleri daha tutarlı hale getirildi.</li>
+                    </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.1.2</span>
+                        <span class="version-date">14 Aralık 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Antrenman oturumu (session) kavramı tanımlandı.</li>
+                        <li>Tekrara dayalı istatistik mantığı oluşturuldu.</li>
+                        <li>Gelecek istatistik sayfasının temeli atıldı.</li>
+                    </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.1.1</span>
+                        <span class="version-date">8 Aralık 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>İlk antrenman prototipi iyileştirildi.</li>
+                        <li>Koç metinleri ve geri bildirim dili düzenlendi.</li>
+                        <li>Küçük UI hataları giderildi.</li>
+                    </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.1.0</span>
+                        <span class="version-date">2 Aralık 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Supabase altyapısı yapıldı.</li>
+                        <li>Yeni antrenman mimarisi tanımlandı.</li>
+                        <li>Koç destekli antrenman akışı oluşturuldu.</li>
+                        <li>İstatistik ve ilerleme sistemi için temel atıldı.</li>
+                    </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.0.9</span>
+                        <span class="version-date">30 Kasım 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>UI yenilemeleri</li>
+                        <li>AI Coach doğruluk oranı %19 arttırıldı.</li>
+                    </ul>
+                </div>
+
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.0.8</span>
+                        <span class="version-date">21 Kasım 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Hata bildir ve geribildirim modülü eklendi.</li>
+                        <li>Koç dili değiştirme eklendi.</li>
+                        <li>Geliştirici paneli geliştirildi.</li>
+                        <li>"Hakkında" ve Sürüm Günlüğü sayfası güncellendi.</li>
+                    </ul>
+                </div>
+
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag">v0.0.7</span>
+                        <span class="version-date">15 Kasım 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Arayüz tamamen yenilendi (Dark Mode).</li>
+                        <li>Profil sayfası ve detaylı istatistikler eklendi.</li>
+                        <li>Geliştirici paneli ve zaman çizelgesi eklendi.</li>
+                        <li>"Hakkında" ve Sürüm Günlüğü sayfası güncellendi.</li>
+                    </ul>
+                </div>
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag dimmed">v0.0.6</span>
+                        <span class="version-date">12 Kasım 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>Sesli geri bildirim asistanı (Türkçe) eklendi.</li>
+                        <li>Kamera performans optimizasyonları yapıldı.</li>
+                        <li>Düşük ışık modu iyileştirildi.</li>
+                    </ul>
+                </div>
+                <div class="changelog-item">
+                    <div class="changelog-header">
+                        <span class="version-tag dimmed">v0.0.5</span>
+                        <span class="version-date">3 Kasım 2025</span>
+                    </div>
+                    <ul class="changelog-list">
+                        <li>İlk Alpha sürümü yayınlandı.</li>
+                        <li>Temel şınav (Push-up) sayacı eklendi.</li>
+                        <li>MoveNet entegrasyonu tamamlandı.</li>
+                    </ul>
+                </div>
+             </div>
+
+        </div>
+    </div>
+    <div id="dev-panel" class="fullscreen-panel">
+        <div class="panel-header">
+            <button class="back-btn" onclick="closePanel('dev-panel')">
+                <i data-lucide="arrow-left"></i>
+            </button>
+            <span class="panel-title">Geliştirici & Süreç</span>
+        </div>
+        <div class="panel-content">
+            <div class="dev-card">
+                <div class="dev-avatar">
+                    <i data-lucide="user" size="32"></i>
+                </div>
+                <div class="dev-info">
+                    <h3>Yakup Delil Akın</h3>
+                    <span>Proje Mimarı & Full Stack</span>
+                    <div class="dev-socials">
+                        <a href="https://github.com/YakupAkn" target="_blank" class="social-link"><i data-lucide="github" size="18"></i></a>
+                        <a href="https://www.linkedin.com/in/yakupdelilakin/" target="_blank" class="social-link"><i data-lucide="linkedin" size="18"></i></a>
+                        <a href="https://www.instagram.com/ykp._.56/" target="_blank" class="social-link"><i data-lucide="instagram" size="18 "></i></a>
+                        <a href="#" class="social-link" onclick="openMail(event)">
+                        <i data-lucide="mail" size="18"></i>
+                        </a>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-card">
+                <div class="setting-row" style="cursor: default;">
+                    <div class="row-info">
+                        <span class="row-title">Teknoloji Yığını</span>
+                        <span class="row-desc" style="color: var(--text-main); margin-top:5px;">TensorFlow.js (MoveNet), Supabase Cloud & Vanilla JS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="blog-section">
+                <div class="blog-header">
+                    <h4>Geliştirici Günlüğü</h4>
+                    <button id="sortBtn" class="sort-btn">Yeni → Eski</button>
+                </div>
+
+                <div id="blog-container" class="blog-list">
+                    <!-- JS buraya yazarlı blog kartlarını basacak -->
+                </div>
+            </div>
+
+            <div id="blog-panel" class="fullscreen-panel">
+                <div class="panel-header">
+                    <button class="back-btn" onclick="closePanel('blog-panel')">
+                        <i data-lucide="arrow-left"></i>
+                    </button>
+                    <span id="blog-panel-title" class="panel-title"></span>
+                </div>
+
+                <div id="blog-panel-content" class="panel-content">
+                    <!-- JS buraya tam blog içeriğini basacak -->
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div id="help-panel" class="fullscreen-panel">
+        <div class="panel-header">
+            <button class="back-btn" onclick="closePanel('help-panel')">
+                <i data-lucide="arrow-left"></i>
+            </button>
+            <span class="panel-title">Yardım Merkezi</span>
+        </div>
+        <div class="panel-content">
+            <div class="setting-card">
+                <div class="setting-row">
+                    <div class="row-info">
+                        <span class="row-title">Kamera neden çalışmıyor?</span>
+                        <span class="row-desc">Tarayıcı ayarlarından kamera iznini açın ve sayfayı yenileyin.</span>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <div class="row-info">
+                        <span class="row-title">AI PushUp tekrarları nasıl sayıyor?</span>
+                        <span class="row-desc">Dirsek ve omuz açıları gerçek zamanlı analiz edilir.</span>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <div class="row-info">
+                        <span class="row-title">Verilerim güvende mi?</span>
+                        <span class="row-desc">Görüntüler cihazınızdan çıkmaz, analiz yerel olarak yapılır.</span>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <div class="row-info">
+                        <span class="row-title">AI Koç çalışmıyor?</span>
+                        <span class="row-desc">Lütfen AI modelinin yüklenmesini bekleyin eğer yine işe yaramıyorsa sayfayı yenileyin.</span>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <div class="row-info">
+                        <span class="row-title">Destek Talebi</span>
+                        <span class="row-desc"><strong>support@athleticocore.com</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="invite-panel" class="fullscreen-panel">
+        <div class="panel-header">
+            <button class="back-btn" onclick="closePanel('invite-panel')">
+                <i data-lucide="arrow-left"></i>
+            </button>
+            <span class="panel-title">Arkadaşını Davet Et</span>
+        </div>
+        <div class="panel-content">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #0070f3, #00c6ff); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 10px 30px rgba(0, 112, 243, 0.3);">
+                   <i data-lucide="user-plus" size="40" color="white"></i>
+                </div>
+                <h2 style="margin: 0; font-size: 1.5rem;">Arkadaşını Davet Et</h2>
+                <span style="color: var(--text-dim); font-size: 0.9rem;">Linki paylaş, birlikte antrenman yap</span>
+            </div>
+            <div class="setting-card">
+                <div class="setting-row" style="cursor: default;">
+                    <div class="row-info" style="width: 100%;">
+                        <span class="row-title" style="margin-bottom: 10px; display: block;">Davet Linki</span>
+                        <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                            <input 
+                                type="text" 
+                                id="invite-link" 
+                                value="https://athleticocore.netlify.app" 
+                                readonly
+                                style="
+                                    flex: 1;
+                                    background: #111;
+                                    border: 1px solid var(--border-color);
+                                    border-radius: 12px;
+                                    padding: 12px;
+                                    color: var(--text-main);
+                                    font-size: 0.9rem;
+                                "
+                            />
+                            <button 
+                                onclick="copyInviteLink()"
+                                style="
+                                    background: var(--accent-color);
+                                    border: none;
+                                    border-radius: 12px;
+                                    padding: 12px 20px;
+                                    color: white;
+                                    font-weight: 700;
+                                    cursor: pointer;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                    white-space: nowrap;
+                                "
+                            >
+                                <i data-lucide="copy" size="18"></i>
+                                Kopyala
+                            </button>
+                        </div>
+                        <div id="copy-feedback" style="margin-top: 10px; font-size: 0.85rem; color: var(--safe); display: none;">
+                            ✓ Link kopyalandı!
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; padding: 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px;">
+                <p style="margin: 0; color: var(--text-dim); font-size: 0.9rem; line-height: 1.6;">
+                    Arkadaşlarını bu linki kullanarak AthleticoCore'a davet edebilirsin. Birlikte antrenman yapmak daha eğlenceli! 💪
+                </p>
+            </div>
+        </div>
+    </div>
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i data-lucide="home"></i>
+            <span>Ana Sayfa</span>
+        </a>
+        <a href="coach.html" class="nav-item">
+            <i data-lucide="activity"></i>
+            <span>AI PushUp</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <i data-lucide="bar-chart-3"></i>
+            <span>Analiz</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i data-lucide="user-round"></i>
+            <span>Profil</span>
+        </a>
+        <a href="ayarlar.html" class="nav-item active">
+            <i data-lucide="settings"></i>
+            <span>Ayarlar</span>
+        </a>
+    </nav>
+    <script>
+
+function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute("data-theme");
+            const nextTheme = currentTheme === "dark" ? "light" : "dark";
+            
+            // Temayı değiştir
+            body.setAttribute("data-theme", nextTheme);
+            
+            // İkonu güncelle
+            const icon = document.getElementById("theme-icon");
+            if (icon) {
+                icon.setAttribute("data-lucide", nextTheme === "dark" ? "sun" : "moon");
+                lucide.createIcons();
+            }
+            
+            // Checkbox durumunu güncelle
+            const checkbox = document.querySelector('.switch input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.checked = nextTheme === "dark";
+            }
+            
+            // Tercihi localStorage'a kaydet
+            localStorage.setItem('theme', nextTheme);
+        }
+
+        // Sayfa yüklendiğinde tema tercihini kontrol et
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                // Kayıtlı temayı uygula
+                document.body.setAttribute("data-theme", savedTheme);
+                
+                // İkonu güncelle
+                const icon = document.getElementById("theme-icon");
+                if (icon) {
+                    icon.setAttribute("data-lucide", savedTheme === "dark" ? "sun" : "moon");
+                    lucide.createIcons();
+                }
+                
+                // Checkbox durumunu güncelle
+                const checkbox = document.querySelector('.switch input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = savedTheme === "dark";
+                }
+            } else {
+                // Varsayılan olarak karanlık mod
+                document.body.setAttribute("data-theme", "dark");
+                const icon = document.getElementById("theme-icon");
+                if (icon) {
+                    icon.setAttribute("data-lucide", "sun");
+                    lucide.createIcons();
+                }
+                const checkbox = document.querySelector('.switch input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            }
+        });
+
+    document.addEventListener("DOMContentLoaded", () => {
+    if (window.lucide) lucide.createIcons();
+
+    const langSelect = document.getElementById("language-select");
+    if (langSelect) {
+        langSelect.value = localStorage.getItem("coachLang") || "tr";
+        langSelect.onchange = () =>
+        localStorage.setItem("coachLang", langSelect.value);
+    }
+
+    const voiceToggle = document.getElementById("voice-toggle");
+    if (voiceToggle) {
+        voiceToggle.checked = localStorage.getItem("voiceEnabled") !== "false";
+        voiceToggle.onchange = () =>
+        localStorage.setItem("voiceEnabled", voiceToggle.checked);
+    }
+    });
+
+    /* =====================
+    PANEL CONTROL (TEK KAYNAK)
+    ===================== */
+    function openPanel(id) {
+    const panel = document.getElementById(id);
+    if (!panel) return;
+
+    panel.classList.add("active");
+    document.body.style.overflow = "hidden";
+
+    if (id === "antrenman-panel") loadWorkoutHistory();
+    if (id === "invite-panel" && window.lucide) {
+        setTimeout(() => lucide.createIcons(), 100);
+    }
+    }
+
+    function closePanel(id) {
+    const panel = document.getElementById(id);
+    if (!panel) return;
+
+    panel.classList.remove("active");
+
+    if (!document.querySelector(".fullscreen-panel.active")) {
+        document.body.style.overflow = "auto";
+    }
+    }
+
+    /* =====================
+    SUPABASE
+    ===================== */
+    const SUPABASE_URL = "https://nhrtpvfofrzndbumkdax.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ocnRwdmZvZnJ6bmRidW1rZGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMjAyMzUsImV4cCI6MjA4MDU5NjIzNX0.Uj6qh2xudA1CnDQWHbqfqEIdlRrmgp1MQna3KsuVxog";
+    const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+    );
+
+    /* =====================
+    FEEDBACK
+    ===================== */
+    async function submitFeedback(type) {
+    const message =
+        type === "feedback"
+        ? document.getElementById("feedback-text")?.value.trim()
+        : document.getElementById("bug-text")?.value.trim();
+
+    const device =
+        type === "bug"
+        ? document.getElementById("bug-device")?.value.trim()
+        : null;
+
+    if (!message) return alert("Boş gönderemezsin");
+
+    const { data } = await supabaseClient.auth.getUser();
+
+    const { error } = await supabaseClient.from("feedback_reports").insert({
+        type,
+        message,
+        device,
+        user_id: data?.user?.id || null
+    });
+
+    if (error) return alert("Gönderim başarısız");
+
+    alert("Gönderildi");
+    closePanel(type === "feedback" ? "feedback-panel" : "bug-panel");
+    }
+
+    /* =====================
+    WORKOUT HISTORY
+    ===================== */
+    async function loadWorkoutHistory() {
+    const list = document.getElementById("antrenman-list");
+    if (!list) return;
+
+    list.innerHTML = "Yükleniyor...";
+
+    const { data: auth } = await supabaseClient.auth.getUser();
+    if (!auth?.user) {
+        list.innerHTML = "Giriş yapılmamış.";
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("workout_sessions")
+        .select("duration_min, push, started_at")
+        .eq("user_id", auth.user.id)
+        .eq("workout_type", "pushup")
+        .eq("completed", true)
+        .order("started_at", { ascending: false });
+
+    if (error || !data?.length) {
+        list.innerHTML = "Henüz antrenman yok.";
+        return;
+    }
+
+    list.innerHTML = "";
+
+    data.forEach(item => {
+        const date = new Date(item.started_at).toLocaleDateString("tr-TR");
+        list.insertAdjacentHTML("beforeend", `
+        <div class="workout-item">
+            <div class="left">
+            <strong>Şınav</strong>
+            <span>${date}</span>
+            </div>
+            <div class="right">
+            <span>${item.push ?? 0} Tekrar</span>
+            <span>${item.duration_min ?? 0} dk</span>
+            </div>
+        </div>
+        `);
+    });
+    }
+
+    /* =====================
+    BLOG
+    ===================== */
+    let posts = [];
+    let sortDesc = true;
+
+    fetch("blog.json")
+    .then(r => r.json())
+    .then(d => {
+        posts = d;
+        renderBlog();
+    });
+
+    function renderBlog() {
+    const c = document.getElementById("blog-container");
+    if (!c) return;
+
+    c.innerHTML = "";
+
+    [...posts]
+        .sort((a, b) =>
+        sortDesc
+            ? new Date(b.date) - new Date(a.date)
+            : new Date(a.date) - new Date(b.date)
+        )
+        .forEach(p => {
+        c.insertAdjacentHTML("beforeend", `
+            <article class="blog-post">
+            <div class="blog-meta">${p.author} • ${p.date}</div>
+            <div class="blog-title">${p.title}</div>
+            <div class="blog-excerpt">${p.excerpt}</div>
+            <div class="read-more" onclick="openBlog(${p.id})">Devamını oku →</div>
+            </article>
+        `);
+        });
+    }
+
+    function openBlog(id) {
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
+
+    document.getElementById("blog-panel-title").innerText = p.title;
+    document.getElementById("blog-panel-content").innerHTML = `
+        <div class="blog-meta">${p.author} • ${p.date}</div>
+        <div class="blog-body">${renderMarkdown(p.body)}</div>
+    `;
+    openPanel("blog-panel");
+    }
+
+    /* =====================
+    MARKDOWN
+    ===================== */
+    function renderMarkdown(t) {
+    return t
+        .replace(/```([\s\S]*?)```/g, (_, c) => `<pre><code>${escapeHtml(c)}</code></pre>`)
+        .replace(/^### (.*$)/gim, "<h3>$1</h3>")
+        .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+        .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+        .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
+        .replace(/\*(.*?)\*/gim, "<em>$1</em>")
+        .replace(/\n/g, "<br>");
+    }
+
+    function escapeHtml(t) {
+    return t.replace(/[&<>]/g, m =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m])
+    );
+    }
+    </script>
+    <script>
+        let workoutSort = "date_desc";
+        function changeWorkoutSort(value) {
+            workoutSort = value;
+            loadWorkoutHistory();
+        }
+
+    </script>
+    <script>
+    function openMail(e) {
+    e.preventDefault();
+
+    const user = "app.athletico";
+    const domain = "gmail.com";
+    const subject = "Geri Bildirim";
+
+    window.location.href =
+        `mailto:${user}@${domain}?subject=${encodeURIComponent(subject)}`;
+    }
+
+    /* =====================
+    INVITE LINK COPY
+    ===================== */
+    function copyInviteLink() {
+    const linkInput = document.getElementById("invite-link");
+    const feedback = document.getElementById("copy-feedback");
+    
+    if (!linkInput) return;
+
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // Mobil için
+
+    try {
+        navigator.clipboard.writeText(linkInput.value).then(() => {
+        if (feedback) {
+            feedback.style.display = "block";
+            setTimeout(() => {
+            feedback.style.display = "none";
+            }, 2000);
+        }
+        });
+    } catch (err) {
+        // Fallback için eski yöntem
+        document.execCommand("copy");
+        if (feedback) {
+        feedback.style.display = "block";
+        setTimeout(() => {
+            feedback.style.display = "none";
+        }, 2000);
+        }
+    }
+    }
+    </script>
+
+</body>
+</html>

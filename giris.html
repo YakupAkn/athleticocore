@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Athletico | Giriş & Kayıt </title>
+    <link rel="icon" type="image/png" href="assets/icons/ac.png?v=1">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="/assets/manifest.json">
+    <meta name="theme-color" content="#1a73e8">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKGT70JY2E"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PKGT70JY2E');
+    </script>
+
+    
+
+    <style>
+        :root {
+            /* Varsayılan Dark Tema */
+            --primary-color: #6366f1;
+            --secondary-color: #a855f7;
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f8fafc;
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --card-shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Light Tema Ayarları */
+        [data-theme="light"] {
+            --bg-dark: #f1f5f9;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --text-color: #1e293b;
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --card-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            overflow: hidden; /* Canvas için */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        #canvas-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Tema Değiştirme Butonu */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            box-shadow: 0 4px 15px var(--card-shadow);
+        }
+
+        .auth-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px var(--card-shadow);
+            animation: fadeIn 0.6s ease-out;
+            position: relative;
+            z-index: 10;
+            max-height: 90vh;
+            overflow-y: auto; /* Küçük ekranlarda taşarsa kaydır */
+        }
+
+        /* Scrollbar Gizleme */
+        .auth-container::-webkit-scrollbar { width: 0; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        /* İkonlar */
+        .input-icon.left {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .input-icon.right {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(99,102,241,0.9);
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 40px 12px 44px; /* Sol ve sağ ikonlar için padding */
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.3s;
+            appearance: none; /* Select okunu temizler */
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Select için özel ok ikonu gerekebilir ama şimdilik basit tutalım */
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Signup Steps */
+        .signup-progress { text-align:center; color:#94a3b8; margin-bottom:12px; font-size:0.95rem; }
+        .signup-step { display: none; }
+        .signup-step[data-step="1"] { display: block; }
+        .step-actions .btn-submit { min-width:100px; }
+
+
+        .divider {
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            color: #475569;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        .divider span { padding: 0 10px; }
+
+        .social-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .social-btn:hover { background: rgba(129, 140, 248, 0.1); }
+
+        .footer-links {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .footer-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .forgot-password:hover { color: var(--primary-color); }
+
+        /* Error & Info */
+        .error-msg { color: #fb7185; font-size: 0.8rem; margin-top: 6px; display: none; text-align: left; }
+        
+        .pw-strength { height: 6px; background: rgba(255,255,255,0.06); border-radius: 6px; margin-top: 8px; overflow:hidden; }
+        .pw-strength .pw-bar { height:100%; width:0%; background: linear-gradient(90deg,#f97316,#84cc16); transition: width .2s ease; }
+        .hidden { display: none !important; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            #canvas-bg { display: none !important; }
+            .auth-container { 
+                backdrop-filter: blur(8px); 
+                box-shadow: 0 10px 20px -8px var(--card-shadow); 
+                padding: 24px; 
+                margin: 20px;
+                height: auto;
+                max-height: none;
+            }
+            .header h1 { font-size: 1.5rem; }
+            body { overflow-y: auto; height: auto; min-height: 100vh; padding: 20px 0; }
+        }
+
+        #message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 25px;
+            border-radius: 30px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            display: none;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <canvas id="canvas-bg"></canvas>
+    
+    <div class="theme-toggle" id="theme-btn">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <div id="message-box">İşlem başarılı!</div>
+
+    <div class="auth-container" id="login-container">
+        <div class="header">
+            <h1>Athletico Coach Giriş</h1>
+            <p>Athletico Hesabı ile giriş yap.</p>
+        </div>
+
+        <form id="form-login" novalidate>
+            <div class="input-group">
+                <input id="login-email" type="email" placeholder="E-posta adresi" required autocomplete="email">
+                <i class="fas fa-envelope input-icon left"></i>
+                <div class="error-msg" id="login-email-error"></div>
+            </div>
+
+            <div class="input-group">
+                <input id="login-password" type="password" placeholder="Şifre" required autocomplete="current-password">
+                <i class="fas fa-lock input-icon left"></i>
+                <i class="fas fa-eye toggle-password input-icon right" data-target="login-password"></i>
+                <div class="error-msg" id="login-password-error"></div>
+            </div>
+            <button type="submit" class="btn-submit">
+                <span>Giriş Yap</span>
+            </button>
+        </form>
+
+        <div class="divider"><span>veya</span></div>
+
+        <button class="social-btn google-auth-btn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="height:18px">
+            <span>Google ile Devam Et</span>
+        </button>
+
+        <div class="footer-links">
+            Henüz hesabınız yok mu? <a data-show="signup">Kayıt Ol</a>
+        </div>
+    </div>
+
+    <div class="auth-container hidden" id="signup-container">
+        <div class="header">
+            <h1>Hesap Oluştur</h1>
+            <p>Spor yapmaya hemen başlayın</p>
+        </div>
+
+        <form id="form-signup" novalidate>
+            <div class="signup-step" data-step="1">
+                <div class="input-group">
+                    <input id="signup-name" type="text" placeholder="Ad Soyad" required autocomplete="name">
+                    <i class="fas fa-user input-icon left"></i>
+                    <div class="error-msg" id="signup-name-error"></div>
+                </div>
+
+                <div class="input-group">
+                    <input id="signup-username" type="text" placeholder="Kullanıcı adı" required autocomplete="username">
+                    <i class="fas fa-user-tag input-icon left"></i>
+                    <div class="error-msg" id="signup-username-error"></div>
+                </div>
+
+                <div class="input-group">
+                    <input id="signup-email" type="email" placeholder="E-posta adresi" required autocomplete="email">
+                    <i class="fas fa-envelope input-icon left"></i>
+                    <div class="error-msg" id="signup-email-error"></div>
+                </div>
+
+                <div class="input-group">
+                    <input id="signup-password" type="password" placeholder="Şifre oluşturun" required autocomplete="new-password">
+                    <i class="fas fa-lock input-icon left"></i>
+                    <i class="fas fa-eye toggle-password input-icon right" data-target="signup-password"></i>
+                    <div class="error-msg" id="signup-password-error"></div>
+                </div>
+
+                <div class="input-group">
+                    <input id="signup-password-confirm" type="password" placeholder="Şifreyi tekrar girin">
+                    <i class="fas fa-lock input-icon left"></i>
+                    <div class="error-msg" id="signup-password-confirm-error"></div>
+                </div>
+                <div class="step-actions" style="display:flex; justify-content:space-between; gap:10px;">
+                    <button type="submit" class="btn-submit">Kayıt Ol</button>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="footer-links">
+            Zaten üye misiniz? <a data-show="login">Giriş Yap</a>
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+    <script>
+    (async function initApp() {
+        let SUPABASE_URL    = import.meta.env.SUPABASE_URL;
+        let SUPABASE_ANON_KEY = import.meta.env.SUPABASE_ANON_KEY;
+        try {
+            const config = await import('.key.env').catch(() => null);
+            if (config && config.SUPABASE_URL) {
+                SUPABASE_URL = config.SUPABASE_URL;
+                SUPABASE_ANON_KEY = config.SUPABASE_ANON_KEY;
+            }
+        } catch (e) { console.log("Config dosyası bulunamadı, manuel ayarlar kullanılacak."); }
+
+        let supabase = null;
+        if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log("Supabase bağlandı.");
+        } else {
+            console.warn("Supabase bilgileri eksik! Formlar demo modunda çalışır.");
+        }
+
+        // --- 2. YARDIMCI FONKSİYONLAR ---
+        function showMessage(msg, type = 'success') {
+            const box = document.getElementById('message-box');
+            box.innerText = msg;
+            box.style.background = type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)';
+            box.style.display = 'block';
+            setTimeout(() => { box.style.display = 'none'; }, 3000);
+        }
+
+        function toggleLoader(btn, isLoading, text = 'İşlem Yapılıyor') {
+            if (isLoading) {
+                btn.dataset.originalText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ${text}`;
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = btn.dataset.originalText || 'Devam Et';
+            }
+        }
+
+        function setError(id, msg) {
+            const el = document.getElementById(id + '-error');
+            if (el) { el.innerText = msg; el.style.display = 'block'; }
+        }
+        function clearErrors() {
+            document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+        }
+
+        // --- 3. UI MANTIĞI (Form Geçişleri, Tema) ---
+        
+        // Formlar arası geçiş
+        document.querySelectorAll('[data-show]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.dataset.show;
+                document.querySelectorAll('.auth-container').forEach(c => c.classList.add('hidden'));
+                document.getElementById(`${targetId}-container`).classList.remove('hidden');
+            });
+        });
+
+        // Şifre Göster/Gizle
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const target = document.getElementById(icon.dataset.target);
+                if (target.type === 'password') {
+                    target.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    target.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+
+        // Tema Değiştirme
+        const themeBtn = document.getElementById('theme-btn');
+        themeBtn.addEventListener('click', () => {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            themeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // --- 4. KAYIT FORMU (MULTI-STEP) MANTIĞI ---
+        const signupSteps = document.querySelectorAll('.signup-step');
+        let currentStep = 1;
+
+        function showStep(step) {
+            signupSteps.forEach(s => s.style.display = 'none');
+            document.querySelector(`.signup-step[data-step="${step}"]`).style.display = 'block';
+            document.getElementById('signup-step-label').innerText = `${step} / 3`;
+            currentStep = step;
+        }
+
+        // "Devam Et" Butonları
+        document.querySelectorAll('.next-step-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                clearErrors();
+                const nextStep = parseInt(btn.dataset.next);
+                
+                // Basit Validasyonlar
+                if (currentStep === 1) {
+                    const name = document.getElementById('signup-name').value;
+                    const username = document.getElementById('signup-username').value;
+                    const email = document.getElementById('signup-email').value;
+                    const pass = document.getElementById('signup-password').value;
+                    const passConf = document.getElementById('signup-password-confirm').value;
+
+                    if (!name) return setError('signup-name', 'İsim gereklidir.');
+                    if (!username || username.length < 3) return setError('signup-username', 'Kullanıcı adı en az 3 karakter olmalı.');
+                    if (/\s/.test(username)) return setError('signup-username', 'Kullanıcı adı boşluk içeremez.');
+                    if (!email || !email.includes('@')) return setError('signup-email', 'Geçerli bir e-posta girin.');
+                    if (pass.length < 6) return setError('signup-password', 'Şifre en az 6 karakter olmalı.');
+                    if (pass !== passConf) return setError('signup-password-confirm', 'Şifreler eşleşmiyor.');
+                }
+                
+                showStep(nextStep);
+            });
+        });
+
+        // "Geri" Butonları
+        document.querySelectorAll('.prev-step-btn').forEach(btn => {
+            btn.addEventListener('click', () => showStep(parseInt(btn.dataset.prev)));
+        });
+
+        // --- 5. FORM GÖNDERİMİ (SUPABASE) ---
+
+        // Kayıt Ol Submit
+        const formSignup = document.getElementById('form-signup');
+        formSignup.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearErrors();
+
+            // 1. adım validasyonu
+            const name = document.getElementById('signup-name').value;
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const pass = document.getElementById('signup-password').value;
+            const passConf = document.getElementById('signup-password-confirm').value;
+
+            if (!name) return setError('signup-name', 'İsim gereklidir.');
+            if (!username || username.length < 3) return setError('signup-username', 'Kullanıcı adı en az 3 karakter olmalı.');
+            if (/\s/.test(username)) return setError('signup-username', 'Kullanıcı adı boşluk içeremez.');
+            if (!email || !email.includes('@')) return setError('signup-email', 'Geçerli bir e-posta girin.');
+            if (pass.length < 6) return setError('signup-password', 'Şifre en az 6 karakter olmalı.');
+            if (pass !== passConf) return setError('signup-password-confirm', 'Şifreler eşleşmiyor.');
+
+            if (!supabase) {
+                alert("Supabase ayarları yapılmadığı için kayıt simülasyonu yapılıyor.");
+                window.location.href = 'index.html'; 
+                return;
+            }
+
+            const btn = formSignup.querySelector('button[type="submit"]');
+            toggleLoader(btn, true, 'Kaydediliyor...');
+
+            const fullName = document.getElementById('signup-name').value;
+            
+            // Ekstra veriler (metadata)
+            const metadata = {
+                full_name: fullName,
+                username: username,
+                gender: document.getElementById('signup-gender')?.value || '',
+                height: document.getElementById('signup-height')?.value || '',
+                weight: document.getElementById('signup-weight')?.value || '',
+                goal: document.getElementById('signup-goal')?.value || ''
+            };
+
+            try {
+                // 1. Auth kaydı
+                const { data, error } = await supabase.auth.signUp({
+                    email, 
+                    password: pass,
+                    options: { data: metadata }
+                });
+
+                if (error) throw error;
+
+                // 2. Profil tablosuna kayıt
+                if (data.user) {
+                    const { error: profileError } = await supabase
+                        .from('profiles_athleticocore')
+                        .insert([
+                            {
+                                id: data.user.id,
+                                username: username,
+                                full_name: fullName,
+                                avatar_url: null,
+                                created_at: new Date().toISOString()
+                            }
+                        ]);
+
+                    if (profileError) throw profileError;
+                }
+
+                showMessage('Kayıt başarılı! Giriş yapabilirsiniz.');
+                document.getElementById('form-signup').reset();
+                setTimeout(() => document.querySelector('[data-show="login"]').click(), 1500);
+
+            } catch (err) {
+                showMessage(err.message, 'error');
+            } finally {
+                toggleLoader(btn, false);
+            }
+        });
+
+        const formLogin = document.getElementById('form-login');
+        formLogin.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearErrors();
+
+            if (!supabase) {
+                alert("Demo modu: Giriş başarılı varsayılıyor.");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const btn = formLogin.querySelector('button[type="submit"]');
+            toggleLoader(btn, true, 'Giriş Yapılıyor...');
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+
+                if (data.session) {
+                    window.location.href = 'index.html';
+                }
+            } catch (err) {
+                showMessage('Giriş başarısız: ' + err.message, 'error');
+                setError('login-password', 'E-posta veya şifre hatalı.');
+            } finally {
+                toggleLoader(btn, false);
+            }
+        });
+
+        document.querySelectorAll('.google-auth-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                if (!supabase) return alert("Google Auth için Supabase ayarları gerekli.");
+                
+                try {
+                    await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: { redirectTo: window.location.origin + '/index.html' }
+                    });
+                } catch (err) {
+                    showMessage(err.message, 'error');
+                }
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

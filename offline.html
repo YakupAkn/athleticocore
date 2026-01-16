@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çevrimdışı - AthleticoCore</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .offline-container {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .offline-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            background: white;
+            color: #764ba2;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .retry-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .home-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">
+            📶
+        </div>
+        <h1>Çevrimdışısınız</h1>
+        <p>
+            İnternet bağlantınız kesildi. AthleticoCore, çevrimdışı modda sınırlı özelliklerle çalışmaya devam edebilir.
+        </p>
+        <p>
+            Antrenmanlarınızı kaydetmeye ve temel özellikleri kullanmaya devam edebilirsiniz. İnternet bağlantısı geri geldiğinde tüm veriler otomatik senkronize edilecektir.
+        </p>
+        <div class="actions">
+            <button class="retry-btn" onclick="window.location.reload()">
+                Yeniden Dene
+            </button>
+            <button class="home-btn" onclick="window.location.href='/'">
+                Ana Sayfaya Dön
+            </button>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+        setInterval(() => {
+            if (navigator.onLine) {
+                window.location.reload();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

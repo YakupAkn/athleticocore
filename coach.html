@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>AthleticoCore - AI Coach</title>
+    <link rel="icon" type="image/png" href="assets/icons/ac.png?v=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKGT70JY2E"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PKGT70JY2E');
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-theme="dark">
+    <style>
+        .warmup-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        }
+        .warmup-content {
+        background: #111;
+        border-radius: 24px;
+        padding: 30px;
+        text-align: center;
+        width: 280px;
+        }
+        .warmup-content h2 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        }
+        #warmup-timer {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-top: 10px;
+        }
+        .hidden {
+        display: none;
+        }
+    </style>
+    <div id="settings-panel" class="settings-panel">
+        <div class="settings-header">
+            <div class="settings-title">
+                <i data-lucide="settings"></i>
+                <h3 data-i18n="settings.title">Ayarlar</h3>
+            </div>
+            <button class="close-settings" onclick="closeSettings()">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        
+        <div class="settings-content">
+            <!-- DİL SEÇİMİ -->
+            <div class="setting-group">
+                <label for="language-select" data-i18n="settings.language">Dil</label>
+                <select id="language-select" class="setting-select">
+                    <option value="tr-TR">Türkçe</option>
+                    <option value="en-US">English</option>
+                </select>
+            </div>
+            
+            <!-- SES AYARLARI -->
+            <div class="setting-group">
+                <label for="voice-toggle" class="setting-label">
+                    <input type="checkbox" id="voice-toggle" checked />
+                    <span data-i18n="settings.voiceFeedback">Sesli geri bildirim</span>
+                </label>
+            </div>
+            
+            <div class="setting-group">
+                <label for="voice-volume" data-i18n="settings.volume">Ses Düzeyi</label>
+                <div class="slider-container">
+                    <input type="range" id="voice-volume" min="0" max="100" value="100" class="setting-slider" />
+                    <span id="volume-value">100%</span>
+                </div>
+            </div>
+            
+            <!-- AI MODEL SEÇİMİ -->
+            <div class="setting-group">
+                <label for="model-select" data-i18n="settings.aiModel">AI Model</label>
+                <select id="model-select" class="setting-select">
+                    <option value="fast" data-i18n="settings.fast">Hızlı</option>
+                    <option value="accurate" data-i18n="settings.accurate">Doğru</option>
+                </select>
+            </div>
+            
+            <!-- HASSASİYET AYARI -->
+            <div class="setting-group">
+                <label for="sensitivity-slider" data-i18n="settings.sensitivity">Hassasiyet</label>
+                <div class="slider-container">
+                    <input type="range" id="sensitivity-slider" min="1" max="10" value="5" class="setting-slider" />
+                    <div class="sensitivity-labels">
+                        <span data-i18n="settings.low">Düşük</span>
+                        <span data-i18n="settings.high">Yüksek</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TEMA SEÇİMİ -->
+            <div class="setting-group">
+                <label for="theme-select" data-i18n="settings.theme">Tema</label>
+                <select id="theme-select" class="setting-select">
+                    <option value="dark" data-i18n="settings.dark">Koyu</option>
+                    <option value="light" data-i18n="settings.light">Açık</option>
+                </select>
+            </div>
+            
+            <!-- CİNSİYET SEÇİMİ -->
+            <div class="setting-group">
+                <label for="gender-select" data-i18n="settings.voiceGender">Ses Cinsiyeti</label>
+                <select id="gender-select" class="setting-select">
+                    <option value="male" data-i18n="settings.male">Erkek</option>
+                    <option value="female" data-i18n="settings.female">Kadın</option>
+                </select>
+            </div>
+            
+            <!-- KONUŞMA HIZI -->
+            <div class="setting-group">
+                <label for="speech-rate" data-i18n="settings.speechRate">Konuşma Hızı</label>
+                <div class="slider-container">
+                    <input type="range" id="speech-rate" min="0.5" max="2" step="0.1" value="1" class="setting-slider" />
+                    <span id="rate-value">1.0x</span>
+                </div>
+            </div>
+            
+            <!-- TEST SESİ -->
+            <div class="setting-group">
+                <button class="btn-secondary" onclick="testVoice()" data-i18n="settings.testVoice">
+                    Test Sesi
+                </button>
+            </div>
+            
+            <!-- AYAR BUTONLARI -->
+            <div class="setting-buttons">
+                <button class="btn-secondary" onclick="resetSettings()" data-i18n="settings.reset">
+                    Varsayılana Dön
+                </button>
+                <button class="btn-primary" onclick="saveSettings()" data-i18n="settings.save">
+                    Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+    <header>
+        <div class="header-left">
+            <button class="icon-btn" onclick="toggleSettings()" id="settings-btn">
+                <i data-lucide="settings"></i>
+            </button>
+            <div class="header-brand">
+                <div class="logo">AC</div>
+                <h1>AthleticoCore</h1>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">
+                <i data-lucide="sun" id="theme-icon"></i>
+            </button>
+            <div class="language-switcher">
+                <select id="quick-language" onchange="changeLanguage(this.value)">
+                    <option value="tr-TR">TR</option>
+                    <option value="en-US">EN</option>
+                </select>
+            </div>
+        </div>
+    </header>
+    <main id="camera-container">
+        <div id="loader">
+        <div class="loader-content">
+            <div class="loading-text-container">
+                <p id="loading-status" data-i18n="loading.model">AI Model Yükleniyor</p>
+                <div class="progress-bar-mini">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            <div id="loading-tip" style="color: var(--text-dim); font-size: 0.8rem; margin-top: 20px;">
+                "Biliyor muydun? AI, dirsek açını gerçek zamanlı analiz eder."
+            </div>
+        </div>
+    </div>
+        <video id="video" playsinline muted></video>
+        <canvas id="output"></canvas>
+        <div class="hud-overlay" id="hud" style="display:none;">
+            <div class="stats-bar">
+                <div class="stat-box highlight">
+                    <span class="label" data-i18n="hud.reps">Tekrar</span>
+                    <span class="value" id="rep-count">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label" data-i18n="hud.time">Süre</span>
+                    <span class="value" id="timer">00:00</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label" data-i18n="hud.score">Puan</span>
+                    <span class="value" id="score">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label" data-i18n="hud.form">Form</span>
+                    <span class="value" id="form-score">100%</span>
+                </div>
+            </div>
+            <div class="feedback-area">
+                <div class="feedback-pill" id="feedback-msg" data-i18n="hud.ready">Hazır ol...</div>
+                <button class="finish-btn" id="stop-btn">
+                    <i data-lucide="square"></i>
+                    <span data-i18n="hud.finish">Bitir</span>
+                </button>
+            </div>
+        </div>
+    </main>
+    <div class="control-layer" id="start-screen">
+        <div class="big-icon">
+            <i data-lucide="camera"></i>
+        </div>
+        <h2 class="title-text">AI PushUp Coach</h2>
+        <p class="desc-text">Telefonu yere sabitle. Kameranın seni tam olarak gördüğünden emin ol. AI hareketlerini sayacak.</p>
+        <button class="start-btn" id="start-btn">Antrenmana Başla</button>
+    </div>
+    <div class="control-layer hidden" id="summary-screen">
+        <div class="big-icon" style="background: var(--success-color); margin-bottom: 1rem;">
+            <i data-lucide="trophy"></i>
+        </div>
+        <h2 class="title-text">Harika İş!</h2>
+        <div class="simple-stats">
+            <div class="stat-item">
+                <i data-lucide="repeat"></i>
+                <div>
+                    <div class="stat-value" id="final-reps">0</div>
+                    <div class="stat-label">TEKRAR</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <i data-lucide="clock"></i>
+                <div>
+                    <div class="stat-value" id="final-time">00:00</div>
+                    <div class="stat-label">SÜRE</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <i data-lucide="star"></i>
+                <div>
+                    <div class="stat-value" id="final-score">0</div>
+                    <div class="stat-label">PUAN</div>
+                </div>
+            </div>
+        </div>
+        <div class="summary-analysis">
+            <div class="analysis-item">
+                <i data-lucide="zap"></i>
+                <div>
+                    <div class="analysis-label">Hız</div>
+                    <div class="analysis-value" id="speed-text">0 tekrar/dk</div>
+                </div>
+            </div>
+            <div class="analysis-item">
+                <i data-lucide="activity"></i>
+                <div>
+                    <div class="analysis-label">Form</div>
+                    <div class="analysis-value" id="form-text">100%</div>
+                </div>
+            </div>
+        </div>
+        <div class="simple-tip">
+            <i data-lucide="lightbulb"></i>
+            <p id="tip-text">Formunu koruyarak devam et!</p>
+        </div>
+        <div class="simple-actions" style="display: flex; gap: 10px; width: 100%; margin-top: 1.5rem;">
+            <button class="start-btn" onclick="location.reload()" style="flex: 1; margin: 0; padding: 14px; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <i data-lucide="refresh-cw" style="width: 16px;"></i>
+                Yeni
+            </button>
+            <button id="share-summary-btn" class="btn-primary" style="flex: 1; background: #25D366; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; font-size: 0.9rem;">
+                <i data-lucide="share-2" style="width: 16px;"></i>
+                Paylaş
+            </button>
+        </div>
+    </div>
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i data-lucide="home"></i>
+            <span data-i18n="nav.home">Ana Sayfa</span>
+        </a>
+        <a href="coach.html" class="nav-item active">
+            <i data-lucide="activity"></i>
+            <span data-i18n="nav.aiCoach">AI PushUp</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <i data-lucide="bar-chart-3"></i>
+            <span data-i18n="nav.stats">Analiz</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i data-lucide="user-round"></i>
+            <span data-i18n="nav.profile">Profil</span>
+        </a>
+        <a href="ayarlar.html" class="nav-item">
+            <i data-lucide="settings"></i>
+            <span data-i18n="nav.settings">Ayarlar</span>
+        </a>
+    </nav>
+    <div id="error-box" class="error-box hidden">
+        <div class="error-content">
+            <i data-lucide="alert-triangle"></i>
+            <div>
+                <h4 data-i18n="error.title">Sistem Hatası</h4>
+                <p id="error-text"></p>
+            </div>
+            <button onclick="closeError()">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+    </div>
+    <script>
+        const SUPABASE_URL = "https://nhrtpvfofrzndbumkdax.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ocnRwdmZvZnJ6bmRidW1rZGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMjAyMzUsImV4cCI6MjA4MDU5NjIzNX0.Uj6qh2xudA1CnDQWHbqfqEIdlRrmgp1MQna3KsuVxog";
+        window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+    <script src="js/utils.js"></script>
+    <script src="js/translation.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/coach.js"></script>
+    <script defer src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+    <script>
+        document.getElementById('share-summary-btn').addEventListener('click', async () => {
+            const reps = document.getElementById('final-reps').innerText;
+            const time = document.getElementById('final-time').innerText;
+            const score = document.getElementById('final-score').innerText;
+            const form = document.getElementById('form-text').innerText;
+            const shareText = `🤖 AthleticoCore AI Coach Analizi:\n` +
+                  `🔥 Sporcumuz bugün tam ${reps} şınav çekti!\n` +
+                  `🎯 Form Kalitesi: %${form}\n` +
+                  `⚡ Patlayıcı Güç: ${speedText}\n\n` +
+                  `Sende durumlar ne? Kendini test et: https://athleticocore.app`;
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'AthleticoCore Başarısı',
+                        shareText: shareText,
+                        url: window.location.origin
+                    });
+                } catch (err) { console.log('İptal edildi'); }
+            } else {
+                navigator.clipboard.writeText(shareText);
+                alert('Sonuçlar kopyalandı!');
+            }
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            loadSettings();
+            updateUILanguage();
+            initApp();
+        });
+    </script>
+</body>
+</html>

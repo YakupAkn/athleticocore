@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AthleticoCore - Premium</title>
+    <link rel="icon" type="image/png" href="assets/icons/ac.png?v=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKGT70JY2E"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PKGT70JY2E');
+    </script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0a0a0a;
+            --accent-color: #0070f3;
+            --accent-gradient: linear-gradient(135deg, #0070f3 0%, #00c6ff 100%);
+            --premium-gold: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            --fire-gradient: linear-gradient(135deg, #FF6B00 0%, #FFA500 100%);
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --border-color: #1a1a1a;
+            --nav-bg: rgba(10, 10, 10, 0.8);
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --danger: #ff4444;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        /* Temel Layout */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            padding: 50px 20px 20px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            margin-right: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            flex-grow: 1;
+        }
+
+        /* Premium Hero */
+        .premium-hero {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+            margin: 0 20px 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fire-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--fire-gradient);
+            color: black;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .premium-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--fire-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .premium-hero h1 {
+            font-size: 1.8rem;
+            margin: 0 0 15px;
+            background: var(--fire-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .premium-subtitle {
+            color: var(--text-dim);
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Motivasyon Kartı */
+        .motivation-card {
+            background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+            border: 1px solid rgba(255, 107, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 20px 25px;
+            text-align: center;
+        }
+
+        .motivation-card h3 {
+            margin: 0 0 10px;
+            color: #FFA500;
+            font-size: 1.1rem;
+        }
+
+        .motivation-card p {
+            margin: 0;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Plan Kartları */
+        .plans-container {
+            padding: 0 20px;
+            display: grid;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .plans-container {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 900px;
+                margin: 0 auto 40px;
+            }
+        }
+
+        .plan-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            border-color: #FFA500;
+        }
+
+        .plan-card.popular {
+            border: 2px solid #FFA500;
+            position: relative;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--fire-gradient);
+            color: black;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .force-badge {
+            position: absolute;
+            top: 30px;
+            right: -30px;
+            background: var(--danger);
+            color: white;
+            padding: 4px 40px;
+            transform: rotate(45deg);
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .plan-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0 0 10px;
+            color: #FFA500;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0;
+            background: var(--fire-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            color: var(--text-dim);
+        }
+
+        .plan-period {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin: 5px 0 0;
+        }
+
+        .savings-badge {
+            display: inline-block;
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--success);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        /* Özellik Listesi */
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .feature-item .icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 165, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .feature-item .icon i {
+            color: #FFA500;
+            width: 14px;
+            height: 14px;
+        }
+
+        .feature-item.disabled {
+            opacity: 0.5;
+        }
+
+        .feature-item.disabled .icon {
+            background: rgba(136, 136, 136, 0.1);
+        }
+
+        .feature-item.disabled .icon i {
+            color: var(--text-dim);
+        }
+
+        .feature-category {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #FFA500;
+            margin: 20px 0 10px;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 165, 0, 0.2);
+            padding-bottom: 5px;
+        }
+
+        /* Butonlar */
+        .plan-button {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            display: block;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-button.primary {
+            background: var(--fire-gradient);
+            color: black;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.3);
+        }
+
+        .plan-button.secondary {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .plan-button.secondary:hover {
+            border-color: #FFA500;
+            background: rgba(255, 165, 0, 0.05);
+        }
+
+        .free-months {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--success);
+            color: black;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            transform: rotate(5deg);
+        }
+
+        /* Karşılaştırma Tablosu */
+        .comparison-section {
+            padding: 0 20px;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 0 25px;
+            text-align: center;
+            color: #FFA500;
+        }
+
+        .comparison-table {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .comparison-row {
+            display: flex;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .feature-name {
+            flex: 2;
+            font-size: 0.9rem;
+        }
+
+        .feature-status {
+            flex: 1;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .free-status {
+            color: var(--text-dim);
+        }
+
+        .premium-status {
+            background: var(--fire-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* SSS */
+        .faq-section {
+            padding: 0 20px;
+            margin-bottom: 40px;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 20px 20px;
+            max-height: 500px;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* Garanti Banner */
+        .guarantee-banner {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 20px 40px;
+            text-align: center;
+        }
+
+        .guarantee-banner .icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 136, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .guarantee-banner h3 {
+            margin: 0 0 10px;
+            color: var(--success);
+        }
+
+        .guarantee-banner p {
+            margin: 0;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* EN ÇOK TERCİH EDİLEN etiketi */
+        .badge-top {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: #111;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        /* Alt bilgilendirme metinleri (footnote) */
+        .plan-footnote {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Yıllık plana özel hafif vurgu */
+        .plan-card.popular .plan-footnote {
+            color: #666;
+        }
+
+        /* Alt Navigasyon */
+        .bottom-nav {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 400px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.6rem;
+            font-weight: 700;
+        }
+
+        .nav-item i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-item.active {
+            color: var(--text-main);
+        }
+
+        /* Animasyon */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes fire {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .fire-animation {
+            background-size: 200% 200%;
+            animation: fire 3s ease infinite;
+        }
+
+        /* Masaüstü İyileştirmeleri */
+        @media (min-width: 768px) {
+            .top-bar {
+                padding: 20px 40px;
+            }
+            
+            .premium-hero {
+                margin: 0 auto 40px;
+                max-width: 800px;
+                padding: 60px 40px;
+            }
+            
+            .premium-hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .motivation-card {
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .comparison-section,
+            .faq-section,
+            .guarantee-banner {
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .faq-item {
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .bottom-nav {
+                max-width: 600px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .plans-container {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 1000px;
+            }
+            
+            .plan-card {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="back-btn" onclick="window.history.back()">
+            <i data-lucide="arrow-left"></i>
+        </button>
+        <span class="page-title">Premium</span>
+        <div style="width: 44px;"></div>
+    </div>
+    <div class="premium-hero">
+        <div class="premium-icon">
+            <i data-lucide="flame"></i>
+        </div>
+        <h1>Gerçek İlerleme İçin<br>Gelişmiş Takip & Disiplin</h1>
+        <p class="premium-subtitle">
+            Artık sadece tekrar saymakla yetinmeyin. Gelişmiş analizler, disiplin takibi ve psikolojik destekle 
+            gerçekten ilerleyin. AthleticoCore Premium, antrenmanlarınızı bir üst seviyeye taşır.
+        </p>
+    </div>
+    <div class="motivation-card">
+        <h3>Acımasız Ama Gerçek</h3>
+        <p>Bırakmak istediğin günlerde "Bugün bırakıyorsun" uyarısı alacaksın. Çünkü gerçek ilerleme, rahat bölgenin dışında başlar.</p>
+    </div>
+    <div class="plans-container">
+        <div class="plan-card popular">
+            <div class="badge-top">EN ÇOK TERCİH EDİLEN</div>
+            <div class="plan-header">
+                <h3 class="plan-name">Yıllık Premium</h3>
+                <p class="plan-price">₺299<span>/yıl</span></p>
+                <p class="plan-period">Aylık ≈ ₺24,9</p>
+                <div class="savings-badge">2 AY BEDAVA</div>
+            </div>
+            <div class="feature-category">AI KOÇ</div>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="brain"></i></div>
+                    <span><strong>Haftalık AI Koç Raporu</strong> – Performans ve gelişim analizi</span>
+                </li>
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="refresh-cw"></i></div>
+                    <span><strong>Otomatik Program Güncelleme</strong> – Hedefe göre ayarlama</span>
+                </li>
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="activity"></i></div>
+                    <span><strong>Tıkanma (Plateau) Tespiti</strong></span>
+                </li>
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="alert-circle"></i></div>
+                    <span><strong>Aşırı / Eksik Yüklenme Uyarıları</strong></span>
+                </li>
+            </ul>
+            <div class="feature-category">GELİŞMİŞ TAKİP</div>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="bar-chart-3"></i></div>
+                    <span><strong>Set / Tekrar / Ağırlık Detay Analizi</strong></span>
+                </li>
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="trending-up"></i></div>
+                    <span><strong>Gün – Hafta – Ay Karşılaştırmaları</strong></span>
+                </li>
+            </ul>
+            <div class="feature-category">DİSİPLİN & PSİKOLOJİ</div>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="flame"></i></div>
+                    <span><strong>Streak Sistemi</strong></span>
+                </li>
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="award"></i></div>
+                    <span><strong>Disiplin Puanı</strong></span>
+                </li>
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="alert-triangle"></i></div>
+                    <span><strong>Disiplin Düşüş Uyarıları</strong></span>
+                </li>
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="trophy"></i></div>
+                    <span><strong>Kişisel Rekor (PR) Takibi</strong></span>
+                </li>
+            </ul>
+            <div class="feature-category">DİĞER AVANTAJLAR</div>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="x-circle"></i></div>
+                    <span><strong>Reklamsız Kullanım</strong></span>
+                </li>
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="cloud"></i></div>
+                    <span><strong>Bulut Yedekleme</strong></span>
+                </li>
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="download"></i></div>
+                    <span><strong>PDF / Excel Dışa Aktarma</strong></span>
+                </li>
+            </ul>
+            <button class="plan-button primary" onclick="selectPlan('yearly')">
+                GELİŞİMİ AÇ
+            </button>
+            <p class="plan-footnote">7 gün dene, memnun kalmazsan iptal et</p>
+        </div>
+        <div class="plan-card">
+            <div class="plan-header">
+                <h3 class="plan-name">Aylık Premium</h3>
+                <p class="plan-price">₺29,90<span>/ay</span></p>
+                <p class="plan-period">İstediğin zaman iptal</p>
+            </div>
+            <div class="feature-category">AI KOÇ</div>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="message-circle"></i></div>
+                    <span>Sınırlı günlük AI yorum</span>
+                </li>
+                <li class="feature-item disabled">
+                    <div class="icon"><i data-lucide="x"></i></div>
+                    <span>Haftalık rapor yok</span>
+                </li>
+            </ul>
+            <div class="feature-category">GELİŞMİŞ TAKİP</div>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="bar-chart-3"></i></div>
+                    <span>Temel set / tekrar görünümü</span>
+                </li>
+                <li class="feature-item disabled">
+                    <div class="icon"><i data-lucide="x"></i></div>
+                    <span>Aylık karşılaştırma yok</span>
+                </li>
+            </ul>
+            <div class="feature-category">DİSİPLİN & PSİKOLOJİ</div>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="flame"></i></div>
+                    <span>Streak sistemi</span>
+                </li>
+                <li class="feature-item disabled">
+                    <div class="icon"><i data-lucide="x"></i></div>
+                    <span>Disiplin puanı yok</span>
+                </li>
+            </ul>
+            <div class="feature-category">DİĞER AVANTAJLAR</div>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <div class="icon"><i data-lucide="x-circle"></i></div>
+                    <span>Reklamsız kullanım</span>
+                </li>
+            </ul>
+            <button class="plan-button secondary" onclick="selectPlan('monthly')">
+                DENEMEYE BAŞLA
+            </button>
+            <p class="plan-footnote">Gelişmiş koçluk yıllık planda</p>
+        </div>
+    </div>
+
+    <div class="comparison-section">
+        <h2 class="section-title">Neden Premium?</h2>
+        <div class="comparison-table">
+            <div class="comparison-row">
+                <div class="feature-name">Gelişmiş Takip & Analiz</div>
+                <div class="feature-status free-status">Temel</div>
+                <div class="feature-status premium-status">Detaylı</div>
+            </div>
+            <div class="comparison-row">
+                <div class="feature-name">Disiplin Puanı</div>
+                <div class="feature-status free-status">Yok</div>
+                <div class="feature-status premium-status">Var</div>
+            </div>
+            <div class="comparison-row">
+                <div class="feature-name">Streak Motivasyonu</div>
+                <div class="feature-status free-status">Temel</div>
+                <div class="feature-status premium-status">Akıllı Uyarılar</div>
+            </div>
+            <div class="comparison-row">
+                <div class="feature-name">Kişisel Rekor Takibi</div>
+                <div class="feature-status free-status">Sınırlı</div>
+                <div class="feature-status premium-status">Kapsamlı</div>
+            </div>
+            <div class="comparison-row">
+                <div class="feature-name">Reklamlar</div>
+                <div class="feature-status free-status">Var</div>
+                <div class="feature-status premium-status">Yok</div>
+            </div>
+            <div class="comparison-row">
+                <div class="feature-name">Destek Önceliği</div>
+                <div class="feature-status free-status">Standart</div>
+                <div class="feature-status premium-status">Premium</div>
+            </div>
+        </div>
+    </div>
+    <div class="guarantee-banner">
+        <div class="icon">
+            <i data-lucide="shield-check"></i>
+        </div>
+        <h3>7 Gün Para İade Garantisi</h3>
+        <p>Premium üyeliği deneyin, ilerleme kaydedemezseniz 14 gün içinde tam para iadesi alın. Hiçbir soru sorulmaz.</p>
+    </div>
+    <div class="faq-section">
+        <h2 class="section-title">Sık Sorulan Sorular</h2>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>"Bugün bırakıyorsun" uyarısı nedir?</span>
+                <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                AI tarafından analiz edilen antrenman alışkanlıklarınıza göre, bırakmaya meyilli olduğunuz günlerde size özel motivasyon mesajları gönderilir. Amacımız sizi harekete geçirmek!
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Disiplin puanı nasıl hesaplanıyor?</span>
+                <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Düzenlilik, performans tutarlılığı, hedef tamamlama oranı ve antrenman kalitesi gibi 12 farklı metriğe dayanarak hesaplanır. Sadece Premium üyeler bu detaylı analizi görebilir.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Yıllık planı iptal edersem ne olur?</span>
+                <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Yıllık üyeliği iptal ederseniz, kalan sürenize göre pro-rata (kullanılmayan günlere göre) iade alırsınız. Premium özelliklere iade işlemi tamamlanana kadar erişmeye devam edersiniz.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Set/tekrar analizi nasıl çalışıyor?</span>
+                <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                AI, her setteki tekrar hızınızı, dinlenme sürelerinizi, form kalitenizi ve efor seviyenizi analiz eder. Bu verilerle size kişisel antrenman önerileri sunar.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>2 ay bedava nasıl çalışıyor?</span>
+                <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Yıllık planı seçtiğinizde, 299 TL ödersiniz ama 14 ay Premium kullanırsınız. İlk 2 ay bedava olarak eklenir. Toplamda 12 ayın parasını ödeyip 14 ay kullanırsınız.
+            </div>
+        </div>
+    </div>
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i data-lucide="home"></i>
+            <span>Ana Sayfa</span>
+        </a>
+        <a href="coach.html" class="nav-item">
+            <i data-lucide="activity"></i>
+            <span>AI PushUp</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <i data-lucide="bar-chart-3"></i>
+            <span>Analiz</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i data-lucide="user-round"></i>
+            <span>Profil</span>
+        </a>
+        <a href="ayarlar.html" class="nav-item">
+            <i data-lucide="settings"></i>
+            <span>Ayarlar</span>
+        </a>
+    </nav>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+        });
+        function selectPlan(planType) {
+            if (planType === 'yearly') {
+                showPaymentModal({
+                    type: 'yearly',
+                    price: 299,
+                    period: 'yıl',
+                    monthlyEquivalent: 24.9
+                });
+            } else {
+                showPaymentModal({
+                    type: 'monthly',
+                    price: 29.90,
+                    period: 'ay',
+                    discount: null,
+                    monthlyEquivalent: 29.90
+                });
+            }
+        }
+        function showPaymentModal(plan) {
+            const modalHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    padding: 20px;
+                    backdrop-filter: blur(10px);
+                ">
+                    <div style="
+                        background: var(--card-bg);
+                        border-radius: 20px;
+                        padding: 30px;
+                        max-width: 500px;
+                        width: 100%;
+                        border: 2px solid #FFA500;
+                        box-shadow: 0 20px 40px rgba(255, 107, 0, 0.3);
+                    ">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin: 0; font-size: 1.2rem; color: #FFA500;">🔥 Premium Üyelik</h3>
+                            <button onclick="closeModal()" style="background: none; border: none; color: var(--text-dim); cursor: pointer;">
+                                <i data-lucide="x"></i>
+                            </button>
+                        </div>
+                        <div style="background: rgba(255, 165, 0, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255, 165, 0, 0.2);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Plan:</span>
+                                <strong style="color: #FFA500;">${plan.type === 'yearly' ? 'Yıllık Premium' : 'Aylık Premium'}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Fiyat:</span>
+                                <strong>₺${plan.price} / ${plan.period}</strong>
+                            </div>
+                            ${plan.type === 'yearly' ? `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Aylık maliyet:</span>
+                                <strong style="color: var(--success);">₺${plan.monthlyEquivalent} / ay</strong>
+                            </div>
+                            ` : ''}
+                            ${plan.discount ? `
+                            <div style="display: flex; justify-content: space-between; color: var(--success);">
+                                <span>Bonus:</span>
+                                <strong>${plan.discount}</strong>
+                            </div>
+                            ` : ''}
+                        </div>
+                        <div style="margin-bottom: 25px;">
+                            <p style="text-align: center; color: var(--text-dim); margin-bottom: 20px; font-size: 0.9rem;">
+                                "Gerçek ilerleme bugün başlar. Disiplin puanınızı yükseltin, kişisel rekorlar kırın."
+                            </p>
+                            <label style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-dim);">Kart Numarası</label>
+                            <input type="text" placeholder="1234 5678 9012 3456" style="
+                                width: 100%;
+                                padding: 12px;
+                                background: #111;
+                                border: 1px solid var(--border-color);
+                                border-radius: 8px;
+                                color: white;
+                                font-family: 'Inter', sans-serif;
+                                margin-bottom: 15px;
+                            ">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-dim);">Son Kullanma</label>
+                                    <input type="text" placeholder="AA/YY" style="
+                                        width: 100%;
+                                        padding: 12px;
+                                        background: #111;
+                                        border: 1px solid var(--border-color);
+                                        border-radius: 8px;
+                                        color: white;
+                                        font-family: 'Inter', sans-serif;
+                                    ">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-dim);">CVC</label>
+                                    <input type="text" placeholder="123" style="
+                                        width: 100%;
+                                        padding: 12px;
+                                        background: #111;
+                                        border: 1px solid var(--border-color);
+                                        border-radius: 8px;
+                                        color: white;
+                                        font-family: 'Inter', sans-serif;
+                                    ">
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="processPayment('${plan.type}')" style="
+                            width: 100%;
+                            padding: 18px;
+                            background: linear-gradient(135deg, #FF6B00 0%, #FFA500 100%);
+                            border: none;
+                            border-radius: 12px;
+                            color: black;
+                            font-weight: 800;
+                            font-size: 1rem;
+                            cursor: pointer;
+                            margin-bottom: 15px;
+                            letter-spacing: 0.5px;
+                        ">
+                            ₺${plan.price} ÖDE VE İLERLEMEYE BAŞLA
+                        </button>
+                        
+                        <p style="text-align: center; font-size: 0.8rem; color: var(--text-dim); margin: 0;">
+                            <i data-lucide="lock" style="width: 12px; height: 12px; vertical-align: middle;"></i>
+                            256-bit SSL şifreleme ile güvendesiniz
+                        </p>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            lucide.createIcons();
+        }
+        function closeModal() {
+            const modal = document.querySelector('[style*="position: fixed; top: 0; left: 0; width: 100%"]');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        function processPayment(planType) {
+            const planName = planType === 'yearly' ? 'Yıllık' : 'Aylık';
+            const successHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    padding: 20px;
+                    backdrop-filter: blur(10px);
+                ">
+                    <div style="
+                        background: var(--card-bg);
+                        border-radius: 20px;
+                        padding: 40px 30px;
+                        max-width: 500px;
+                        width: 100%;
+                        border: 2px solid var(--success);
+                        text-align: center;
+                    ">
+                        <div style="width: 80px; height: 80px; background: rgba(0,255,136,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                            <i data-lucide="party-popper" style="color: var(--success); width: 40px; height: 40px;"></i>
+                        </div>
+                        <h3 style="margin: 0 0 15px; color: var(--success);">🎉 TEBRİKLER!</h3>
+                        <p style="color: var(--text-main); margin-bottom: 10px; font-size: 1.1rem;">
+                            ${planName} Premium üyeliğiniz aktif!
+                        </p>
+                        <p style="color: var(--text-dim); margin-bottom: 25px; line-height: 1.6;">
+                            Artık gelişmiş takip özellikleri, disiplin puanı ve kişisel rekor takibi sizi bekliyor. 
+                            ${planType === 'yearly' ? '<strong>2 ay bedava bonusunuz</strong> da hesabınıza eklendi!' : ''}
+                        </p>
+                        <button onclick="redirectToDashboard()" style="
+                            width: 100%;
+                            padding: 16px;
+                            background: var(--success);
+                            border: none;
+                            border-radius: 12px;
+                            color: black;
+                            font-weight: 800;
+                            font-size: 1rem;
+                            cursor: pointer;
+                        ">
+                            DASHBOARD'A GİT VE İLERLE
+                        </button>
+                        
+                        <p style="text-align: center; font-size: 0.8rem; color: var(--text-dim); margin-top: 15px;">
+                            İlerleme yolculuğunuz başladı! 🚀
+                        </p>
+                    </div>
+                </div>
+            `;
+            closeModal();
+            setTimeout(() => {
+                document.body.insertAdjacentHTML('beforeend', successHTML);
+                lucide.createIcons();
+            }, 300);
+        }
+        function redirectToDashboard() {
+            window.location.href = 'index.html';
+        }
+        function toggleFAQ(element) {
+            const faqItem = element.closest('.faq-item');
+            faqItem.classList.toggle('active');
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (item !== faqItem) {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

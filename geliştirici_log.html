@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geliştirici Bug & Geri Bildirim Günlüğü</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #e2e8f0; /* Slate 200 */
+        }
+        /* Scrollbar özelleştirme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+        .status-checkbox:checked + div {
+            background-color: #10b981; /* Emerald 500 */
+            border-color: #10b981;
+        }
+        .status-checkbox:checked + div:after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: white;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
+            <div>
+                <h1 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <i class="fa-solid fa-bug text-red-500"></i>
+                    Bug & Geri Bildirim Günlüğü
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">Geliştirici Kayıt Sistemi v1.0</p>
+            </div>
+            <div class="flex gap-3">
+                <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="importJson(this)">
+                <button onclick="document.getElementById('jsonInput').click()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition border border-slate-600 flex items-center gap-2">
+                    <i class="fa-solid fa-file-import"></i> JSON Yükle
+                </button>
+                <button onclick="exportJson()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition font-medium flex items-center gap-2 shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-download"></i> JSON İndir
+                </button>
+            </div>
+        </header>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Toplam Kayıt</p>
+                    <p id="totalCount" class="text-2xl font-bold text-white">0</p>
+                </div>
+                <div class="h-10 w-10 rounded-full bg-slate-700 flex items-center justify-center text-slate-300">
+                    <i class="fa-solid fa-list"></i>
+                </div>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Açık Buglar</p>
+                    <p id="openCount" class="text-2xl font-bold text-red-400">0</p>
+                </div>
+                <div class="h-10 w-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Tamamlanan</p>
+                    <p id="completedCount" class="text-2xl font-bold text-emerald-400">0</p>
+                </div>
+                <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1">
+                <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 sticky top-8">
+                    <h2 class="text-lg font-semibold text-white mb-4 border-b border-slate-700 pb-2">Yeni Kayıt Ekle</h2>
+                    <form id="logForm" onsubmit="addLog(event)">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Tarih</label>
+                            <input type="date" id="logDate" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-blue-500 outline-none transition">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Tür</label>
+                            <select id="logType" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-blue-500 outline-none transition">
+                                <option value="bug">Bug</option>
+                                <option value="feedback">Geri Bildirim</option>
+                                <option value="todo">Yapılacak</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Öncelik</label>
+                            <div class="flex gap-2">
+                                <label class="cursor-pointer flex-1">
+                                    <input type="radio" name="priority" value="low" class="peer hidden">
+                                    <div class="text-center py-2 rounded-lg border border-slate-700 bg-slate-900 text-slate-400 peer-checked:bg-slate-600 peer-checked:text-white hover:bg-slate-800 text-xs transition">Düşük</div>
+                                </label>
+                                <label class="cursor-pointer flex-1">
+                                    <input type="radio" name="priority" value="medium" class="peer hidden" checked>
+                                    <div class="text-center py-2 rounded-lg border border-slate-700 bg-slate-900 text-slate-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:text-white hover:bg-slate-800 text-xs transition">Orta</div>
+                                </label>
+                                <label class="cursor-pointer flex-1">
+                                    <input type="radio" name="priority" value="high" class="peer hidden">
+                                    <div class="text-center py-2 rounded-lg border border-slate-700 bg-slate-900 text-slate-400 peer-checked:bg-red-600 peer-checked:border-red-600 peer-checked:text-white hover:bg-slate-800 text-xs transition">Yüksek</div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Açıklama</label>
+                            <textarea id="logDesc" required rows="4" placeholder="Sorunu veya geri bildirimi detaylandırın..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none transition resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg transition shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Listeye Ekle
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="lg:col-span-2">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-white">Günlük Kayıtları</h2>
+                    <div class="flex gap-2 text-xs">
+                        <button onclick="filterLogs('all')" id="filter-all" class="px-3 py-1 rounded-full bg-blue-600 text-white">Tümü</button>
+                        <button onclick="filterLogs('active')" id="filter-active" class="px-3 py-1 rounded-full bg-slate-700 text-slate-300 hover:bg-slate-600">Aktif</button>
+                        <button onclick="filterLogs('completed')" id="filter-completed" class="px-3 py-1 rounded-full bg-slate-700 text-slate-300 hover:bg-slate-600">Tamamlanan</button>
+                    </div>
+                </div>
+
+                <div id="logsContainer" class="space-y-3">
+                    <!-- Javascript ile doldurulacak -->
+                    <div class="text-center py-12 text-slate-500 bg-slate-800/50 rounded-xl border border-dashed border-slate-700">
+                        <i class="fa-solid fa-clipboard-list text-4xl mb-3 opacity-50"></i>
+                        <p>Henüz kayıt bulunmuyor.</p>
+                        <p class="text-xs mt-1">Yeni bir bug ekleyin veya JSON dosyası yükleyin.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-800 border border-slate-700 text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50">
+        <i class="fa-solid fa-check-circle text-emerald-400"></i>
+        <span id="toastMessage">İşlem başarılı</span>
+    </div>
+    <script>
+        let logs = [];
+        let currentFilter = 'all';
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('logDate').valueAsDate = new Date();
+            loadFromLocalStorage();
+            renderLogs();
+        });
+        function addLog(e) {
+            e.preventDefault();
+            const date = document.getElementById('logDate').value;
+            const desc = document.getElementById('logDesc').value;
+            const type = document.getElementById('logType').value;
+            const priorityRadios = document.getElementsByName('priority');
+            let priority = 'medium';
+            for (const radio of priorityRadios) {
+                if (radio.checked) priority = radio.value;
+            }
+            const newLog = {
+                id: crypto.randomUUID(),
+                date: date,
+                description: desc,
+                type: type,
+                priority: priority,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+            logs.unshift(newLog);
+            saveToLocalStorage();
+            renderLogs();
+            showToast('Kayıt başarıyla eklendi');
+            document.getElementById('logDesc').value = '';
+        }
+        function toggleStatus(id) {
+            const logIndex = logs.findIndex(l => l.id === id);
+            if (logIndex > -1) {
+                logs[logIndex].status = logs[logIndex].status === 'pending' ? 'completed' : 'pending';
+                saveToLocalStorage();
+                renderLogs();
+            }
+        }
+        function deleteLog(id) {
+            if(confirm('Bu kaydı silmek istediğinize emin misiniz?')) {
+                logs = logs.filter(l => l.id !== id);
+                saveToLocalStorage();
+                renderLogs();
+                showToast('Kayıt silindi');
+            }
+        }
+        function filterLogs(filterType) {
+            currentFilter = filterType;
+            ['all', 'active', 'completed'].forEach(type => {
+                const btn = document.getElementById(`filter-${type}`);
+                if (type === filterType) {
+                    btn.classList.remove('bg-slate-700', 'text-slate-300');
+                    btn.classList.add('bg-blue-600', 'text-white');
+                } else {
+                    btn.classList.add('bg-slate-700', 'text-slate-300');
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                }
+            });
+            renderLogs();
+        }
+        function renderLogs() {
+            const container = document.getElementById('logsContainer');
+            document.getElementById('totalCount').textContent = logs.length;
+            document.getElementById('openCount').textContent = logs.filter(l => l.status === 'pending').length;
+            document.getElementById('completedCount').textContent = logs.filter(l => l.status === 'completed').length;
+            let filteredLogs = logs;
+            if (currentFilter === 'active') filteredLogs = logs.filter(l => l.status === 'pending');
+            if (currentFilter === 'completed') filteredLogs = logs.filter(l => l.status === 'completed');
+            if (filteredLogs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-500 bg-slate-800/50 rounded-xl border border-dashed border-slate-700">
+                        <i class="fa-solid fa-clipboard-list text-4xl mb-3 opacity-50"></i>
+                        <p>Bu filtrede kayıt bulunamadı.</p>
+                    </div>`;
+                return;
+            }
+            container.innerHTML = filteredLogs.map(log => {
+                const isCompleted = log.status === 'completed';
+                let priorityClass = '';
+                let priorityLabel = '';
+                if(log.priority === 'high') { priorityClass = 'text-red-400 border-red-500/30 bg-red-500/10'; priorityLabel = 'Yüksek'; }
+                else if(log.priority === 'low') { priorityClass = 'text-slate-400 border-slate-500/30 bg-slate-500/10'; priorityLabel = 'Düşük'; }
+                else { priorityClass = 'text-blue-400 border-blue-500/30 bg-blue-500/10'; priorityLabel = 'Orta'; }
+                let typeIcon = '';
+                if(log.type === 'bug') typeIcon = '<i class="fa-solid fa-bug text-red-400" title="Bug"></i>';
+                else if(log.type === 'feedback') typeIcon = '<i class="fa-regular fa-lightbulb text-yellow-400" title="Geri Bildirim"></i>';
+                else typeIcon = '<i class="fa-solid fa-list-check text-blue-400" title="Yapılacak"></i>';
+                return `
+                <div class="bg-slate-800 p-4 rounded-xl border ${isCompleted ? 'border-emerald-500/30 opacity-75' : 'border-slate-700'} shadow-sm transition-all hover:border-slate-600 group">
+                    <div class="flex items-start gap-4">
+                        <label class="cursor-pointer relative mt-1">
+                            <input type="checkbox" class="status-checkbox hidden" ${isCompleted ? 'checked' : ''} onchange="toggleStatus('${log.id}')">
+                            <div class="w-6 h-6 border-2 border-slate-500 rounded flex items-center justify-center transition hover:border-emerald-400"></div>
+                        </label>
+                        <div class="flex-1">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-700">${log.date}</span>
+                                    <span class="text-xs px-2 py-0.5 rounded border ${priorityClass}">${priorityLabel}</span>
+                                    ${typeIcon}
+                                </div>
+                                <button onclick="deleteLog('${log.id}')" class="text-slate-500 hover:text-red-400 transition opacity-0 group-hover:opacity-100">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                            <p class="text-slate-200 whitespace-pre-wrap ${isCompleted ? 'line-through text-slate-500' : ''}">${escapeHtml(log.description)}</p>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+        function saveToLocalStorage() {
+            localStorage.setItem('bugTrackerLogs', JSON.stringify(logs));
+        }
+        function loadFromLocalStorage() {
+            const stored = localStorage.getItem('bugTrackerLogs');
+            if (stored) {
+                try {
+                    logs = JSON.parse(stored);
+                } catch (e) {
+                    console.error("Local storage verisi bozuk", e);
+                    logs = [];
+                }
+            }
+        }
+        function exportJson() {
+            if (logs.length === 0) {
+                showToast('İndirilecek kayıt yok!', 'error');
+                return;
+            }
+            const dataStr = JSON.stringify(logs, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = `bug_logs.json`;
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            showToast('Dosya indirildi');
+        }
+        function importJson(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedLogs = JSON.parse(e.target.result);
+                    if (Array.isArray(importedLogs)) {      
+                        if (logs.length > 0) {
+                            if(confirm('Mevcut listenizle birleştirmek mi istersiniz? (İptal derseniz mevcut liste silinip yerine bu dosya yüklenecek)')) {
+                                const existingIds = new Set(logs.map(l => l.id));
+                                let addedCount = 0;
+                                importedLogs.forEach(l => {
+                                    if(!existingIds.has(l.id)) {
+                                        logs.push(l);
+                                        addedCount++;
+                                    }
+                                });
+                                showToast(`${addedCount} yeni kayıt eklendi`);
+                            } else {
+                                logs = importedLogs;
+                                showToast('Liste dosyadaki veriyle yenilendi');
+                            }
+                        } else {
+                            logs = importedLogs;
+                            showToast('Dosya başarıyla yüklendi');
+                        }
+                        saveToLocalStorage();
+                        renderLogs();
+                    } else {
+                        alert('Geçersiz JSON formatı: Dizi (array) bekleniyor.');
+                    }
+                } catch (error) {
+                    alert('Dosya okunurken hata oluştu: ' + error);
+                }
+                input.value = '';
+            };
+            reader.readAsText(file);
+        }
+        function escapeHtml(text) {
+            if (!text) return "";
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

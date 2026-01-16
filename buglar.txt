@@ -1,0 +1,5 @@
+3 ocak 2026:
+-Antrenmanları iki defa kaydediyor
+-stats.html de bir element aydınlık moda uyum sağlayamıyor
+-ayarlar.html de antrenman geçmişi filtreleme çalışmıyor
+-ayarlar.html karanlık/aydınlık mod geçişi olmuyor

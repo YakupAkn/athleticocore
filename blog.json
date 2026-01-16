@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1767271084712,
+    "title": "Yılın İlk Günü ve AthleticoCoach",
+    "author": "Yakup Delil Akın",
+    "date": "2026-01-01",
+    "excerpt": "AthleticoCoach neden “mükemmel başlangıçlar” için değil, devam edebilen insanlar için var?",
+    "body": "Yılın ilk günü çoğu fitness uygulaması için aynıdır:  \nbüyük vaatler, iddialı sloganlar ve “bu yıl kesin olacak” cümleleri.\n\nAthleticoCoach böyle bir yerden doğmadı.\n\n## Neden AthleticoCoach?\n\nAthleticoCoach, kusursuz planlar yapanlar için değil,  \n**bırakıp tekrar dönen insanlar** için tasarlandı.\n\nÇünkü gerçek şu:\n- Her gün motive olmayacaksın\n- Bazı günler hiç antrenman yapmayacaksın\n- Bazen zincir kırılacak\n\nVe bu seni başarısız yapmaz.\n\n## Yılın ilk günü = test günü değil\n\nAthleticoCoach’ta bugün:\n- Rekor kırman gerekmiyor\n- “Yeni ben” olman gerekmiyor\n- Sadece **hareket etmen** yeterli\n\nBir şınav bile, sıfırdan büyüktür.  \nUygulama bunu bilir ve seni bunun için yargılamaz.\n\n## İstatistikler yargılamak için değil, fark etmek için\n\nAthleticoCoach’taki istatistikler:\n- “Harikasın!” demek için değil\n- “Bak, gerçekten ne yaptın?” demek için vardır\n\nÇünkü gelişim:\n- Tek bir günde olmaz\n- Grafiklerdeki düz çizgilerde saklıdır\n- Sessiz ama gerçektir\n\n## Bu yıl ne vaat etmiyoruz?\n\n- 30 günde vücut\n- Mükemmel disiplin\n- Hiç düşmeyen motivasyon\n\nBunlar gerçekçi değil.\n\n## Ne vaat ediyoruz?\n\n- Gerçeği\n- Takibi\n- Devam etmeyi\n\nAthleticoCoach bir koç gibi bağırmaz.  \nBir ayna gibi durur.\n\n## Son söz\n\nYılın ilk günü, AthleticoCoach’u “mükemmel” kullanmak zorunda değilsin.  \nAma bugün bir kez açarsan,  \nyarın açman biraz daha kolay olur.\n\nBu uygulama tam olarak bunun için var.\n\nDevam edebilenler için.\n"
+  },
+  {
+    "id": 1767180642348,
+    "title": "AthleticoCoach Nasıl Büyüdü?",
+    "author": "Yakup Delil Akın",
+    "date": "31-12-2025",
+    "excerpt": "Kod Çalışıyordu Ama Kullanıcı Gelmiyordu",
+    "body": "\nKod Çalışıyordu Ama Kullanıcı Gelmiyordu\n\nBir fitness uygulaması geliştirirken ilk odaklandığım şey koddu.\nDoğal olarak.\n\nPose estimation çalışıyor mu?\nTekrar sayımı doğru mu?\nModel stabil mi?\nFPS düşüyor mu?\n\nHepsi çalışıyordu.\n\nAma ortada küçük bir problem vardı:\nKullanıcılar geri gelmiyordu.\n\nAsıl Zorluk Kod Değil\n\nBir noktada fark ettim ki, bir fitness uygulamasında en zor şey:\n\ndoğru modeli seçmek değil\n\nalgoritmayı optimize etmek değil\n\nhata ayıklamak hiç değil\n\nAsıl zor olan şey şu:\n\nKullanıcıyı yarın uygulamayı tekrar açmaya ikna etmek.\n\nKod bir kez çalışır.\nAma alışkanlık her gün yeniden kazanılır.\n\nPose Estimation mı, Psikoloji mi?\n\nEvet, hareket analizi önemli.\nAma kullanıcı şunu sormuyor:\n\n“Bu model MoveNet mi?”\n\nŞunu soruyor:\n\n“Beni doğru yönlendirdi mi?”\n\n“Yanlış yaptığımı net anladım mı?”\n\n“Bittiğinde kendimi iyi hissettim mi?”\n\n“Yarın tekrar açmaya değer mi?”\n\nTeknik doğruluk, kullanıcı algısıyla birleşmediği sürece anlamsız.\n\nBasit Arayüz, Net Geri Bildirim\n\nİlk versiyonlarda şunu yaptım:\n\nçok fazla metrik\n\nçok fazla ekran\n\nçok fazla ayar\n\nSonra şunu fark ettim:\nKullanıcı düşünmek istemiyor.\n\nFitness yaparken özellikle.\n\nBu yüzden:\n\narayüzü sadeleştirdim\n\ngeri bildirimleri kısa ve net tuttum\n\n“şunu düzelt” yerine “şimdi şunu yap” dedim\n\nAz özellik, ama tam çalışan özellik.\n\nMükemmel Özellik Değil, Tamamlanan Alışkanlık\n\nBir kullanıcı için şunlar arasında fark var:\n\n“Harika özelliklere sahip ama açmadığım bir uygulama”\n\n“Basit ama her gün açtığım bir uygulama”\n\nÜrün açısından da fark var:\n\nbiri vitrin\n\ndiğeri yaşayan bir sistem\n\nBen ikinciyi seçtim.\n\nSonuç\n\nBu süreç bana şunu net öğretti:\n\nFitness uygulamalarında başarı, kod kalitesinden çok\ndavranış tasarımıyla ölçülür.\n\nKod çalışıyordu.\nAma kullanıcı gelmiyordu.\n\nSorun kodda değildi.\nSorun, ürünü bir alışkanlığa dönüştürememiş olmamdı.\n\nBunu fark ettiğim anda, uygulama gerçekten gelişmeye başladı.\n"
+  },
+  {
+    "id": 1,
+    "title": "Yıl Sonu Değerlendirmesi: AthleticoCore Nereden Nereye",
+    "date": "2025-12-31",
+    "author": "Yakup Delil Akın",
+    "excerpt": "AthleticoCore’un fikir aşamasından çalışan bir beta ürüne dönüşmesini ve bu süreçte öğrendiklerimi özetliyorum.",
+    "body": "# 2025'in Son Gününde\n\nBu yazı bir tanıtım değil. Bir **durum tespiti**.\n\nAthleticoCore, \"spor uygulaması yapayım\" fikriyle başlamadı. Asıl amaç şuydu:\n\n- Disipline dayalı gelişim\n- Veriye dayalı geri bildirim\n- Kişinin kendisiyle rekabet etmesi\n\n## Bu Noktaya Nasıl Geldi?\n\nİlk günlerde sadece **şınav sayan basit bir sistem** vardı. Bugün ise:\n\n- MoveNet tabanlı hareket analizi\n- Mobile-first arayüz\n- Geliştirici günlüğü olan yaşayan bir ürün\n\n## En Büyük Ders\n\n**Motivasyon geçici, sistem kalıcıdır.**\n\nBu projede ilerlememi sağlayan şey heves değil, her gün küçük de olsa ilerleme zorunluluğuydu.\n\n## 2026 İçin Net Hedefler\n\n- Squat ve plank analizi\n- Daha net geri bildirimler\n- Gerçek kullanıcı testleri\n\n> Bu ürün kusursuz değil. Ama gerçek.\n\nVe 2026'da daha da sertleşecek."
+  }
+]
