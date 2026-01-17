@@ -624,37 +624,6 @@ async function renderLoop() {
 }
 
 
-async function saveWorkoutTosb({
-  workoutType,
-  durationMin,
-  intensity,
-  push,
-  completed,
-  startedAt
-}) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("Kullanıcı giriş yapmamış");
-
-  const { error } = await window.sb
-    .from("workout_sessions")
-    .insert({
-      user_id: user.id,
-      workout_type: workoutType,
-      duration_min: durationMin,
-      intensity,
-      push,
-      completed,
-      started_at: new Date(startedAt).toISOString(),
-      ended_at: new Date().toISOString(),
-      created_at: new Date().toISOString(),
-      score: calculateWorkoutScore(push, durationMin, intensity) // Yeni eklenen
-    });
-
-  if (error) {
-    console.error("Supabase kayıt hatası:", error);
-    throw error;
-  }
-}
 
 function calculateWorkoutScore(pushups, durationMin, intensity) {
   const baseScore = pushups * 10;
@@ -928,7 +897,7 @@ async function saveWorkoutData() {
             await updateDailySummary(Math.ceil(duration / 60));
         }
         
-        console.log('Antrenman verisi kaydedildi:', workoutData);
+        console.log('Antrenman verisi kaydedildi');
         
     } catch (error) {
         console.error('Veri kaydetme hatası:', error);
@@ -1139,18 +1108,12 @@ function initApp() {
 
 // Sonuç ekranı için kısa analiz hazırla
 function prepareSimpleAnalysis() {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/07ce7579-5474-447d-8271-5c1210405a4f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'coach.js:1199',message:'prepareSimpleAnalysis called',data:{pushupCount,startTime,currentFormScore,consistencyScore,hasStartTime:!!startTime},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'C'})}).catch(()=>{});
-    // #endregion
     
     const duration = Math.floor((Date.now() - startTime) / 1000);
     const durationMin = duration / 60;
     
     // Hız hesapla
     const speed = durationMin > 0 ? pushupCount / durationMin : 0;
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/07ce7579-5474-447d-8271-5c1210405a4f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'coach.js:1208',message:'Speed calculation',data:{pushupCount,duration,durationMin,speed},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'C'})}).catch(()=>{});
-    // #endregion
     const speedTextEl = document.getElementById('speed-text');
     if (speedTextEl) speedTextEl.textContent = `${speed.toFixed(1)} tekrar/dk`;
     
@@ -1191,12 +1154,18 @@ function prepareSimpleAnalysis() {
 }
 
 // Güncellenmiş stopWorkout fonksiyonu (analiz ekle)
-function stopWorkout() {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/07ce7579-5474-447d-8271-5c1210405a4f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'coach.js:1244',message:'stopWorkout called',data:{pushupCount,startTime,isWorkoutActive,hasStartTime:!!startTime},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'A,B'})}).catch(()=>{});
-    // #endregion
+async function stopWorkout() {
+    if (isSaving) {
+        console.warn('Antrenman zaten kaydediliyor.');
+        return;
+    }
+
+    // Eğer antrenman aktif değilse ve hiç tekrar yapılmadıysa (yanlışlıkla durdurma vs)
+    // yine de durduruyoruz ama isSaving kontrolü önemli.
     
+    isSaving = true;
     isWorkoutActive = false;
+
     if (animationId) cancelAnimationFrame(animationId);
     stopTimer();
 
@@ -1213,9 +1182,6 @@ function stopWorkout() {
     if (summaryScreen) summaryScreen.classList.remove('hidden');
 
     // Sonuçları göster
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/07ce7579-5474-447d-8271-5c1210405a4f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'coach.js:1266',message:'Before setting final-reps',data:{pushupCount,finalRepsElement:!!document.getElementById('final-reps')},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     const finalReps = document.getElementById('final-reps');
     if (finalReps) finalReps.innerText = pushupCount;
 
@@ -1231,16 +1197,10 @@ function stopWorkout() {
     if (finalScore) {
         const durationMin = Math.ceil((Date.now() - startTime) / 1000 / 60);
         const score = calculateWorkoutScore(pushupCount, durationMin, 7);
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/07ce7579-5474-447d-8271-5c1210405a4f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'coach.js:1278',message:'Calculating final score',data:{pushupCount,durationMin,score,startTime,currentTime:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'B'})}).catch(()=>{});
-        // #endregion
         finalScore.innerText = score;
     }
 
     // Analiz hazırla
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/07ce7579-5474-447d-8271-5c1210405a4f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'coach.js:1285',message:'Before prepareSimpleAnalysis',data:{pushupCount,currentFormScore,consistencyScore,startTime},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'C'})}).catch(()=>{});
-    // #endregion
     prepareSimpleAnalysis();
 
     // Yerel depolamaya kaydet
@@ -1249,24 +1209,15 @@ function stopWorkout() {
     }
     speak('workout_complete', 'Antrenman tamamlandı', true);
 
-    // Süreyi hesapla
-    const durationMin = Math.ceil((Date.now() - startTime) / 1000 / 60);
-    (async () => {
-        try {
-            await saveWorkoutTosb({
-                workoutType: "pushup",
-                durationMin,
-                intensity: 7,
-                push: pushupCount,
-                completed: true,
-                startedAt: startTime
-            });
-
-            console.log("Antrenman Supabase'e kaydedildi");
-        } catch (e) {
-            console.error("Kayıt başarısız", e);
-        }
-    })();
+    // Verileri kaydet (Local History + Supabase)
+    try {
+        await saveWorkoutData();
+    } catch (e) {
+        console.error("Kayıt başarısız", e);
+    } finally {
+        // Kayıt işlemi bitti (başarılı veya başarısız), bayrağı kaldır
+        isSaving = false;
+    }
 }
 
 window.startWorkout = startWorkout;

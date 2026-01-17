@@ -40,7 +40,7 @@ function loadSettings() {
         updateSettingsUI();
         applySettings();
         
-        console.log('Ayarlar yüklendi:', appSettings);
+        console.log('Ayarlar yüklendi');
     } catch (error) {
         console.error('Ayarlar yüklenirken hata:', error);
         resetSettings();
@@ -72,7 +72,7 @@ function saveSettings() {
         // Bildirim göster
         showNotification('Ayarlar kaydedildi!', 'success');
         
-        console.log('Ayarlar kaydedildi:', appSettings);
+        console.log('Ayarlar kaydedildi');
     } catch (error) {
         console.error('Ayarlar kaydedilirken hata:', error);
         showNotification('Ayarlar kaydedilemedi!', 'error');
