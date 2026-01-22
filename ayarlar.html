@@ -2,12 +2,14 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AthleticoCore - Ayarlar</title>
     <link rel="icon" type="image/png" href="assets/icons/ac.png?v=1">
+    <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/translation.js"></script>
     <script>
     const SUPABASE_URL    = import.meta.env.SUPABASE_URL;
     const SUPABASE_ANON_KEY = import.meta.env.SUPABASE_ANON_KEY;
@@ -92,7 +94,7 @@
         .top-bar {
             display: flex;
             align-items: center;
-            padding: 50px 20px 20px;
+            padding: calc(20px + env(safe-area-inset-top)) 20px 20px;
             background: rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
             position: sticky;
@@ -167,6 +169,8 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .fullscreen-panel.active {
             transform: translateX(0);
@@ -353,7 +357,7 @@
         }
         .status-pill.connected { background: rgba(0, 255, 136, 0.1); color: var(--safe); }
         .bottom-nav { 
-            position:fixed; bottom:25px; left:50%; transform:translateX(-50%); 
+            position:fixed; bottom:calc(25px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
             width:calc(100% - 40px); max-width:400px; 
             background:var(--nav-bg); backdrop-filter: blur(20px); 
             display:flex; justify-content:space-between; align-items:center; 
@@ -443,17 +447,17 @@
             </svg>
         </button>
         
-    <span class="page-title">Ayarlar</span>
+    <span class="page-title" data-i18n="settings.title">Ayarlar</span>
 </div>
 
     <div class="settings-container">
-        <div class="group-label">Görünüm & Deneyim</div>
+        <div class="group-label" data-i18n="settings.appearance">Görünüm & Deneyim</div>
         <div class="setting-card">
             <div class="setting-row">
                 <div class="row-icon"><i id="theme-icon" data-lucide="moon"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Karanlık Mod</span>
-                    <span class="row-desc">Göz yorgunluğunu azaltın</span>
+                    <span class="row-title" data-i18n="settings.darkMode">Karanlık Mod</span>
+                    <span class="row-desc" data-i18n="settings.darkModeDesc">Göz yorgunluğunu azaltın</span>
                 </div>
                 <label class="switch">
                     <input type="checkbox" checked onchange="toggleTheme()">
@@ -463,8 +467,8 @@
             <div class="setting-row">
                 <div class="row-icon"><i data-lucide="volume-2"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Sesli Koç Desteği</span>
-                    <span class="row-desc">Antrenman sırasında tekrar sesini aç / kapat</span>
+                    <span class="row-title" data-i18n="settings.coachVoice">Sesli Koç Desteği</span>
+                    <span class="row-desc" data-i18n="settings.coachVoiceDesc">Antrenman sırasında sesli uyarılar</span>
                 </div>
                 <label class="switch">
                     <input type="checkbox" checked id="voice-toggle">
@@ -474,22 +478,22 @@
             <div class="setting-row">
                 <div class="row-icon"><i data-lucide="languages"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Koç Dili</span>
-                    <span class="row-desc">Sesli koçun konuşma dili</span>
+                    <span class="row-title" data-i18n="settings.coachLanguage">Koç Dili</span>
+                    <span class="row-desc" data-i18n="settings.coachLanguageDesc">Sesli koçun konuşma dili</span>
                 </div>
 
                 <select id="language-select" class="lang-select">
-                    <option value="tr">🇹🇷 Türkçe</option>
-                    <option value="en">🇬🇧 English</option>
+                    <option value="tr-TR">🇹🇷 Türkçe</option>
+                    <option value="en-US">🇬🇧 English</option>
                 </select>
             </div>
-        <div class="group-label">Hesap & Destek</div>
+        <div class="group-label" data-i18n="settings.account">Hesap & Destek</div>
         <div class="setting-card">
             <div class="setting-row" onclick="window.location.href='profile.html'">
                 <div class="row-icon"><i data-lucide="user"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Profil Bilgileri</span>
-                    <span class="row-desc">Kilo, boy ve hedef ayarları</span>
+                    <span class="row-title" data-i18n="settings.profileInfo">Profil Bilgileri</span>
+                    <span class="row-desc" data-i18n="settings.profileInfoDesc">Kilo, boy ve hedef ayarları</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
@@ -497,16 +501,16 @@
             <div class="setting-row premium" onclick="window.location.href='premium.html'">
                 <div class="row-icon"><i data-lucide="crown"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Premium’a Geç</span>
-                    <span class="row-desc">Tüm özelliklerin kilidini aç</span>
+                    <span class="row-title" data-i18n="settings.premium">Premium’a Geç</span>
+                    <span class="row-desc" data-i18n="settings.premiumDesc">Tüm özelliklerin kilidini aç</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
             <div class="setting-row" onclick="openPanel('invite-panel')">
                 <div class="row-icon"><i data-lucide="user-plus"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Arkadaşını Davet Et</span>
-                    <span class="row-desc">Arkadaşını bu dünyaya davet etmeye ne dersin?</span>
+                    <span class="row-title" data-i18n="settings.invite">Arkadaşını Davet Et</span>
+                    <span class="row-desc" data-i18n="settings.inviteDesc">Arkadaşını bu dünyaya davet etmeye ne dersin?</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
@@ -514,8 +518,8 @@
             <div class="setting-row" onclick="openPanel('help-panel')">
                 <div class="row-icon"><i data-lucide="help-circle"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Yardım Merkezi</span>
-                    <span class="row-desc">Sıkça sorulan sorular ve destek</span>
+                    <span class="row-title" data-i18n="settings.help">Yardım Merkezi</span>
+                    <span class="row-desc" data-i18n="settings.helpDesc">Sıkça sorulan sorular ve destek</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
@@ -526,14 +530,14 @@
             <button class="back-btn" onclick="closePanel('main-menu')">
                 <i data-lucide="arrow-left"></i>
             </button>
-            <span class="panel-title">Menü</span>
+            <span class="panel-title" data-i18n="settings.menu">Menü</span>
         </div>
         <div class="panel-content" style="display:flex; flex-direction:column; height:100%;">
         <div class="setting-card">
             <div class="setting-row" onclick="openPanel('about-panel')">
                 <div class="row-icon"><i data-lucide="info"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Hakkında</span>
+                    <span class="row-title" data-i18n="settings.about">Hakkında</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
@@ -541,7 +545,7 @@
             <div class="setting-row" onclick="openPanel('dev-panel')">
                 <div class="row-icon"><i data-lucide="terminal"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Geliştirici & Süreç</span>
+                    <span class="row-title" data-i18n="settings.developer">Geliştirici & Süreç</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
@@ -549,7 +553,7 @@
             <div class="setting-row" onclick="openPanel('coach-panel')">
                 <div class="row-icon"><i data-lucide="user"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Koç Ayarları</span>
+                    <span class="row-title" data-i18n="settings.coachSettings">Koç Ayarları</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
@@ -559,7 +563,7 @@
                     <i data-lucide="dumbbell"></i>
                 </div>
                 <div class="row-info">
-                    <span class="row-title">Antrenman Geçmişi</span>
+                    <span class="row-title" data-i18n="settings.workoutHistory">Antrenman Geçmişi</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
@@ -572,8 +576,8 @@
             <div class="setting-row" onclick="openPanel('feedback-panel')">
                 <div class="row-icon"><i data-lucide="message-square"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Geri Bildirim</span>
-                    <span class="row-desc">Öneri ve görüşlerini paylaş</span>
+                    <span class="row-title" data-i18n="settings.feedback">Geri Bildirim</span>
+                    <span class="row-desc" data-i18n="settings.feedbackDesc">Öneri ve görüşlerini paylaş</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
@@ -581,8 +585,8 @@
             <div class="setting-row" onclick="openPanel('bug-panel')">
                 <div class="row-icon"><i data-lucide="bug"></i></div>
                 <div class="row-info">
-                    <span class="row-title">Hata Bildir</span>
-                    <span class="row-desc">Karşılaştığın sorunları ilet</span>
+                    <span class="row-title" data-i18n="settings.reportBug">Hata Bildir</span>
+                    <span class="row-desc" data-i18n="settings.reportBugDesc">Karşılaştığın sorunları ilet</span>
                 </div>
                 <i data-lucide="chevron-right" size="18" color="#444"></i>
             </div>
@@ -1121,23 +1125,23 @@
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
             <i data-lucide="home"></i>
-            <span>Ana Sayfa</span>
+            <span data-i18n="nav.home">Ana Sayfa</span>
         </a>
         <a href="coach.html" class="nav-item">
             <i data-lucide="activity"></i>
-            <span>AI PushUp</span>
+            <span data-i18n="nav.aiCoach">AI PushUp</span>
         </a>
         <a href="stats.html" class="nav-item">
             <i data-lucide="bar-chart-3"></i>
-            <span>Analiz</span>
+            <span data-i18n="nav.stats">Analiz</span>
         </a>
         <a href="profile.html" class="nav-item">
             <i data-lucide="user-round"></i>
-            <span>Profil</span>
+            <span data-i18n="nav.profile">Profil</span>
         </a>
         <a href="ayarlar.html" class="nav-item active">
             <i data-lucide="settings"></i>
-            <span>Ayarlar</span>
+            <span data-i18n="nav.settings">Ayarlar</span>
         </a>
     </nav>
     <script>
@@ -1206,9 +1210,11 @@ function toggleTheme() {
 
     const langSelect = document.getElementById("language-select");
     if (langSelect) {
-        langSelect.value = localStorage.getItem("coachLang") || "tr";
-        langSelect.onchange = () =>
-        localStorage.setItem("coachLang", langSelect.value);
+        const savedLang = localStorage.getItem("language") || "tr-TR";
+        langSelect.value = savedLang;
+        langSelect.onchange = () => {
+            changeLanguage(langSelect.value);
+        };
     }
 
     const voiceToggle = document.getElementById("voice-toggle");
@@ -1302,16 +1308,28 @@ function toggleTheme() {
         return;
     }
 
-    const { data, error } = await supabaseClient
+    let query = supabaseClient
         .from("workout_sessions")
         .select("duration_min, push, started_at")
         .eq("user_id", auth.user.id)
         .eq("workout_type", "pushup")
-        .eq("completed", true)
-        .order("started_at", { ascending: false });
+        .eq("completed", true);
+
+    if (workoutSort === "date_asc") {
+        query = query.order("started_at", { ascending: true });
+    } else if (workoutSort === "pushup_desc") {
+        query = query.order("push", { ascending: false });
+    } else if (workoutSort === "pushup_asc") {
+        query = query.order("push", { ascending: true });
+    } else {
+        // Default: date_desc
+        query = query.order("started_at", { ascending: false });
+    }
+
+    const { data, error } = await query;
 
     if (error || !data?.length) {
-        list.innerHTML = "Henüz antrenman yok.";
+        list.innerHTML = getTranslation('stats.noActivity');
         return;
     }
 

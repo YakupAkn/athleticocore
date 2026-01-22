@@ -96,7 +96,57 @@ const translations = {
         'voice.cameraAdjust': 'Kamerayı düzelt',
         'voice.formGood': 'Formun çok iyi!',
         'voice.slowDown': 'Biraz yavaşla',
-        'voice.fullRange': 'Tam hareket yap'
+        'voice.fullRange': 'Tam hareket yap',
+
+        // YENİ EKLENENLER (INDEX, STATS, PROFILE, SETTINGS)
+        'home.welcome': 'Hoşgeldin',
+        'home.dailyStats': 'Günlük Aktivite',
+        'home.lastActivity': 'Son Aktivite',
+        'home.startWorkout': 'Antrenmana Başla',
+        'home.features': 'Özellikler',
+
+        'stats.title': 'Antrenman Analizi',
+        'stats.development': 'Gelişim Analizi',
+        'stats.recentActivity': 'Son Aktiviteler',
+        'stats.totalPushups': 'Toplam Şınav',
+        'stats.bestSeries': 'En İyi Seri',
+        'stats.noActivity': 'Henüz aktivite yok.',
+
+        'profile.title': 'Profil',
+        'profile.weight': 'Kilo',
+        'profile.height': 'Boy',
+        'profile.goal': 'Hedef',
+        'profile.edit': 'Düzenle',
+        'profile.share': 'Paylaş',
+        'profile.logout': 'Çıkış Yap',
+
+        'settings.appearance': 'Görünüm & Deneyim',
+        'settings.account': 'Hesap & Destek',
+        'settings.darkMode': 'Karanlık Mod',
+        'settings.darkModeDesc': 'Göz yorgunluğunu azaltın',
+        'settings.coachVoice': 'Sesli Koç Desteği',
+        'settings.coachVoiceDesc': 'Antrenman sırasında sesli uyarılar',
+        'settings.coachLanguage': 'Koç Dili',
+        'settings.coachLanguageDesc': 'Sesli koçun konuşma dili',
+        'settings.profileInfo': 'Profil Bilgileri',
+        'settings.profileInfoDesc': 'Kilo, boy ve hedef ayarları',
+        'settings.premium': 'Premium’a Geç',
+        'settings.premiumDesc': 'Tüm özelliklerin kilidini aç',
+        'settings.invite': 'Arkadaşını Davet Et',
+        'settings.inviteDesc': 'Arkadaşını davet et',
+        'settings.help': 'Yardım Merkezi',
+        'settings.helpDesc': 'Sıkça sorulan sorular',
+        'settings.menu': 'Menü',
+        'settings.about': 'Hakkında',
+        'settings.developer': 'Geliştirici & Süreç',
+        'settings.coachSettings': 'Koç Ayarları',
+        'settings.workoutHistory': 'Antrenman Geçmişi',
+        'settings.feedback': 'Geri Bildirim',
+        'settings.feedbackDesc': 'Öneri ve görüşlerini paylaş',
+        'settings.reportBug': 'Hata Bildir',
+        'settings.reportBugDesc': 'Karşılaştığın sorunları ilet',
+        'settings.version': 'Yazılım Sürümü',
+        'settings.logout': 'Oturumu Kapat'
     },
     
     'en-US': {
@@ -195,7 +245,57 @@ const translations = {
         'voice.cameraAdjust': 'Adjust camera',
         'voice.formGood': 'Form looks great!',
         'voice.slowDown': 'Slow down a bit',
-        'voice.fullRange': 'Use full range'
+        'voice.fullRange': 'Use full range',
+
+        // NEW ADDITIONS
+        'home.welcome': 'Welcome',
+        'home.dailyStats': 'Daily Activity',
+        'home.lastActivity': 'Last Activity',
+        'home.startWorkout': 'Start Workout',
+        'home.features': 'Features',
+
+        'stats.title': 'Workout Analysis',
+        'stats.development': 'Progress Analysis',
+        'stats.recentActivity': 'Recent Activities',
+        'stats.totalPushups': 'Total Pushups',
+        'stats.bestSeries': 'Best Series',
+        'stats.noActivity': 'No activity yet.',
+
+        'profile.title': 'Profile',
+        'profile.weight': 'Weight',
+        'profile.height': 'Height',
+        'profile.goal': 'Goal',
+        'profile.edit': 'Edit',
+        'profile.share': 'Share',
+        'profile.logout': 'Logout',
+
+        'settings.appearance': 'Appearance & Experience',
+        'settings.account': 'Account & Support',
+        'settings.darkMode': 'Dark Mode',
+        'settings.darkModeDesc': 'Reduce eye strain',
+        'settings.coachVoice': 'Voice Coach Support',
+        'settings.coachVoiceDesc': 'Voice alerts during workout',
+        'settings.coachLanguage': 'Coach Language',
+        'settings.coachLanguageDesc': 'Language of the voice coach',
+        'settings.profileInfo': 'Profile Information',
+        'settings.profileInfoDesc': 'Weight, height and goal settings',
+        'settings.premium': 'Get Premium',
+        'settings.premiumDesc': 'Unlock all features',
+        'settings.invite': 'Invite a Friend',
+        'settings.inviteDesc': 'Invite your friend',
+        'settings.help': 'Help Center',
+        'settings.helpDesc': 'Frequently asked questions',
+        'settings.menu': 'Menu',
+        'settings.about': 'About',
+        'settings.developer': 'Developer & Process',
+        'settings.coachSettings': 'Coach Settings',
+        'settings.workoutHistory': 'Workout History',
+        'settings.feedback': 'Feedback',
+        'settings.feedbackDesc': 'Share your suggestions',
+        'settings.reportBug': 'Report Bug',
+        'settings.reportBugDesc': 'Report issues you encountered',
+        'settings.version': 'Software Version',
+        'settings.logout': 'Log Out'
     }
 };
 
@@ -268,3 +368,18 @@ function getTranslation(key, lang = null) {
 function getVoiceTranslation(key) {
     return getTranslation(`voice.${key}`);
 }
+
+// BAŞLANGIÇTA DİLİ YÜKLE
+function initLanguage() {
+    const savedLang = localStorage.getItem('language') || 'tr-TR';
+    currentLanguage = savedLang;
+    updateUILanguage();
+
+    // Eğer coachSettings varsa onu da güncelle
+    if (window.coachSettings) {
+        window.coachSettings.language = savedLang;
+    }
+}
+
+// Sayfa yüklendiğinde otomatik başlat
+document.addEventListener('DOMContentLoaded', initLanguage);

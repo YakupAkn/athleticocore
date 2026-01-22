@@ -1,4 +1,4 @@
-const CACHE_NAME = 'athletico-v2.0';
+const CACHE_NAME = 'athletico-v2.1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -6,9 +6,15 @@ const ASSETS_TO_CACHE = [
   './stats.html',
   './profile.html',
   './ayarlar.html',
-  './assets/icons/ac.png'
+  './manifest.json',
+  './assets/icons/ac.png',
+  './css/styles.css',
+  './css/app.css',
   './js/app.js',
   './js/coach.js',
+  './js/settings.js',
+  './js/translation.js',
+  './js/utils.js'
 ];
 self.addEventListener('install', (event) => {
   event.waitUntil(

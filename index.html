@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>AthleticoCoach – Ana Menü</title>
     <meta name="description" content="Motivasyon beklemeden antrenman yapanlar için sade ve dürüst bir spor uygulaması. Şınav takibi, istatistikler ve devamlılık.">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKGT70JY2E"></script>
@@ -29,6 +29,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="js/translation.js"></script>
 
     <style>
         :root {
@@ -61,7 +62,8 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            padding-bottom: 100px;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+            padding-top: env(safe-area-inset-top);
             transition: background-color 0.3s ease;
         }
 
@@ -143,14 +145,14 @@
         .header-brand { display: flex; align-items: center; gap: 10px; }
         .header-brand h1 { font-size: 1.1rem; font-weight: 800; }
         .start-btn { 
-            position: fixed; bottom: 110px; left: 20px; right: 20px; max-width: 560px; margin: 0 auto;
+            position: fixed; bottom: calc(110px + env(safe-area-inset-bottom)); left: 20px; right: 20px; max-width: 560px; margin: 0 auto;
             background: var(--accent-color); color: white; border: none; padding: 18px; border-radius: 20px;
             font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px;
             box-shadow: 0 10px 30px rgba(0, 112, 243, 0.3); cursor: pointer; z-index: 100;
             transition: var(--transition);
         }
         .start-btn:active { transform: scale(0.98); }
-        .bottom-nav { position:fixed; bottom:25px; left:50%; transform:translateX(-50%); width:calc(100% - 40px); max-width:400px; background:var(--nav-bg); backdrop-filter: blur(20px); display:flex; justify-content:space-between; align-items:center; padding:10px 15px; border-radius:24px; border:1px solid var(--border-color); z-index:2000; }
+        .bottom-nav { position:fixed; bottom:calc(25px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); width:calc(100% - 40px); max-width:400px; background:var(--nav-bg); backdrop-filter: blur(20px); display:flex; justify-content:space-between; align-items:center; padding:10px 15px; border-radius:24px; border:1px solid var(--border-color); z-index:2000; }
         .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--text-dim); text-decoration:none; font-size:0.6rem; font-weight:700; }
         .nav-item i { width:20px; height:20px; }
         .nav-item.active { color:var(--text-main); }
@@ -251,17 +253,17 @@
 
     <main class="content">
         <section class="hero">
-            <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom: 5px;" id="welcome-msg">Hoş geldin!</p> 
+            <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom: 5px;" id="welcome-msg" data-i18n="home.welcome">Hoş geldin!</p>
             <h2 id="greeting-text">Hadi bugün şınav hedefini tamamlayalım.</h2>
         </section>
 
         <section class="quick-stats">
             <div class="stat-card">
-                <span class="stat-label skeleton">Toplam</span>
+                <span class="stat-label skeleton" data-i18n="stats.totalPushups">Toplam</span>
                 <span class="stat-value skeleton" id="total-pushups">0</span>
             </div>
             <div class="stat-card">
-                <span class="stat-label skeleton">En İyi Seri</span>
+                <span class="stat-label skeleton" data-i18n="stats.bestSeries">En İyi Seri</span>
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span class="stat-value skeleton" id="best-session">0</span>
                     <i data-lucide="flame" style="color:#ff9500; width:20px;"></i>
@@ -277,7 +279,7 @@
                     <div class="progress-text" id="goal-percent">0%</div>
                 </div>
                 <div>
-                    <span class="stat-label">Günlük Hedef</span>
+                    <span class="stat-label" data-i18n="home.dailyStats">Günlük Hedef</span>
                     <div style="display: flex; align-items: baseline; gap: 5px;">
                         <span class="stat-value" id="today-count">0</span>
                         <span style="color:var(--text-dim); font-size:0.9rem; font-weight:600;">/ 50</span>
@@ -287,35 +289,35 @@
         </section>
         
         <div class="chart-card">
-            <span class="stat-label" style="margin-bottom:15px;">Haftalık İlerleme</span>
+            <span class="stat-label" style="margin-bottom:15px;" data-i18n="stats.development">Haftalık İlerleme</span>
             <div id="main-chart" class="skeleton" style="min-height: 180px; border-radius: 12px;"></div>
         </div>
 
         <button class="start-btn" onclick="window.location.href='coach.html'">
-            <i data-lucide="play" fill="currentColor"></i> Antrenmana Başla
+            <i data-lucide="play" fill="currentColor"></i> <span data-i18n="home.startWorkout">Antrenmana Başla</span>
         </button>
     </main>
 
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item active">
             <i data-lucide="home"></i>
-            <span>Ana Sayfa</span>
+            <span data-i18n="nav.home">Ana Sayfa</span>
         </a>
         <a href="coach.html" class="nav-item">
             <i data-lucide="activity"></i>
-            <span>AI PushUp</span>
+            <span data-i18n="nav.aiCoach">AI PushUp</span>
         </a>
         <a href="stats.html" class="nav-item">
             <i data-lucide="bar-chart-3"></i>
-            <span>Analiz</span>
+            <span data-i18n="nav.stats">Analiz</span>
         </a>
         <a href="profile.html" class="nav-item">
             <i data-lucide="user-round"></i>
-            <span>Profil</span>
+            <span data-i18n="nav.profile">Profil</span>
         </a>
         <a href="ayarlar.html" class="nav-item">
             <i data-lucide="settings"></i>
-            <span>Ayarlar</span>
+            <span data-i18n="nav.settings">Ayarlar</span>
         </a>
     </nav>
 
