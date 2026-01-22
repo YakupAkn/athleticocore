@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>AthleticoCore - Profil</title>
     <link rel="icon" type="image/png" href="assets/icons/ac.png?v=1">
     <link rel="manifest" href="manifest.json">
@@ -16,6 +16,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/translation.js"></script>
         <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKGT70JY2E"></script>
     <script>
@@ -50,7 +51,14 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); transition: var(--transition); }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: var(--transition);
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
 
         header {
             width: 100%; max-width: 480px; margin: 0 auto;
@@ -101,7 +109,7 @@
         .btn-outline { background: transparent; border: 1px solid var(--border-color); color: #ff4444; margin-top: 10px; }
 
         .message-box {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            position: fixed; top: calc(20px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
             padding: 12px 24px; border-radius: 10px; z-index: 3000; display: none;
             background: var(--card-bg); border: 1px solid var(--accent-color); color: white;
         }
@@ -123,7 +131,7 @@
         }
         .ac-btn:active { transform: scale(0.95); }
         .bottom-nav {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            position: fixed; bottom: calc(25px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%);
             width: calc(100% - 40px); max-width: 400px;
             background: var(--nav-bg); backdrop-filter: blur(20px);
             display: flex; justify-content: space-around; padding: 12px;
@@ -139,7 +147,7 @@
 <body data-theme="dark">
 
     <header>
-        <div style="font-weight: 900; font-size: 1.2rem;">Profil</div>
+        <div style="font-weight: 900; font-size: 1.2rem;" data-i18n="profile.title">Profil</div>
         <div style="display: flex; gap: 15px; align-items: center;">
             <button id="share-btn" style="background:none; border:none; color:var(--text-main); cursor:pointer;">
                 <i data-lucide="share-2"></i>
@@ -164,15 +172,15 @@
         <div class="stats-summary">
             <div class="summary-card">
                 <span class="val" id="profile-total-pushups">0</span>
-                <span class="lbl">Toplam Şınav</span>
+                <span class="lbl" data-i18n="stats.totalPushups">Toplam Şınav</span>
             </div>
             <div class="summary-card">
                 <span class="val" id="total-sessions">0</span>
-                <span class="lbl">Antrenman</span>
+                <span class="lbl" data-i18n="settings.workoutHistory">Antrenman</span>
             </div>
             <div class="summary-card">
                 <span class="val" id="total-minutes">0</span>
-                <span class="lbl">Dakika</span>
+                <span class="lbl" data-i18n="hud.time">Dakika</span>
             </div>
         </div>
         <div id="install-card" style="display:none;" class="settings-card">
@@ -188,18 +196,18 @@
             </div>
         </div>
         <div class="settings-card">
-            <h3>HESAP AYARLARI</h3>
+            <h3 data-i18n="settings.account">HESAP AYARLARI</h3>
             <div class="input-group">
-                <label>Ad Soyad</label>
+                <label data-i18n="profile.title">Ad Soyad</label>
                 <input type="text" id="input-fullname" placeholder="Adınız Soyadınız">
             </div>
             <button class="btn btn-primary" id="update-profile-btn">
                 <i data-lucide="save" style="width:18px;"></i>
-                Ayarları Kaydet
+                <span data-i18n="settings.save">Ayarları Kaydet</span>
             </button>
             <button class="btn btn-outline" id="logout-btn">
                 <i data-lucide="log-out" style="width:18px;"></i>
-                Çıkış Yap
+                <span data-i18n="profile.logout">Çıkış Yap</span>
             </button>
         </div>
     </main>
@@ -207,27 +215,27 @@
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
             <i data-lucide="home"></i>
-            <span>Ana Sayfa</span>
+            <span data-i18n="nav.home">Ana Sayfa</span>
         </a>
 
         <a href="coach.html" class="nav-item" aria-current="page">
             <i data-lucide="activity"></i>
-            <span>AI PushUp</span>
+            <span data-i18n="nav.aiCoach">AI PushUp</span>
         </a>
 
         <a href="stats.html" class="nav-item">
             <i data-lucide="bar-chart-3"></i>
-            <span>Analiz</span>
+            <span data-i18n="nav.stats">Analiz</span>
         </a>
 
         <a href="profile.html" class="nav-item active">
             <i data-lucide="user-round"></i>
-            <span>Profil</span>
+            <span data-i18n="nav.profile">Profil</span>
         </a>
 
         <a href="ayarlar.html" class="nav-item">
             <i data-lucide="settings"></i>
-            <span>Ayarlar</span>
+            <span data-i18n="nav.settings">Ayarlar</span>
         </a>
         
     </nav>

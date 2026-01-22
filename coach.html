@@ -229,35 +229,35 @@
         <div class="big-icon">
             <i data-lucide="camera"></i>
         </div>
-        <h2 class="title-text">AI PushUp Coach</h2>
-        <p class="desc-text">Telefonu yere sabitle. Kameranın seni tam olarak gördüğünden emin ol. AI hareketlerini sayacak.</p>
-        <button class="start-btn" id="start-btn">Antrenmana Başla</button>
+        <h2 class="title-text" data-i18n="start.title">AI PushUp Coach</h2>
+        <p class="desc-text" data-i18n="start.description">Telefonu yere sabitle. Kameranın seni tam olarak gördüğünden emin ol. AI hareketlerini sayacak.</p>
+        <button class="start-btn" id="start-btn" data-i18n="start.button">Antrenmana Başla</button>
     </div>
     <div class="control-layer hidden" id="summary-screen">
         <div class="big-icon" style="background: var(--success-color); margin-bottom: 1rem;">
             <i data-lucide="trophy"></i>
         </div>
-        <h2 class="title-text">Harika İş!</h2>
+        <h2 class="title-text" data-i18n="summary.title">Harika İş!</h2>
         <div class="simple-stats">
             <div class="stat-item">
                 <i data-lucide="repeat"></i>
                 <div>
                     <div class="stat-value" id="final-reps">0</div>
-                    <div class="stat-label">TEKRAR</div>
+                    <div class="stat-label" data-i18n="summary.reps">TEKRAR</div>
                 </div>
             </div>
             <div class="stat-item">
                 <i data-lucide="clock"></i>
                 <div>
                     <div class="stat-value" id="final-time">00:00</div>
-                    <div class="stat-label">SÜRE</div>
+                    <div class="stat-label" data-i18n="summary.time">SÜRE</div>
                 </div>
             </div>
             <div class="stat-item">
                 <i data-lucide="star"></i>
                 <div>
                     <div class="stat-value" id="final-score">0</div>
-                    <div class="stat-label">PUAN</div>
+                    <div class="stat-label" data-i18n="summary.score">PUAN</div>
                 </div>
             </div>
         </div>
@@ -265,14 +265,14 @@
             <div class="analysis-item">
                 <i data-lucide="zap"></i>
                 <div>
-                    <div class="analysis-label">Hız</div>
+                    <div class="analysis-label" data-i18n="summary.speed">Hız</div>
                     <div class="analysis-value" id="speed-text">0 tekrar/dk</div>
                 </div>
             </div>
             <div class="analysis-item">
                 <i data-lucide="activity"></i>
                 <div>
-                    <div class="analysis-label">Form</div>
+                    <div class="analysis-label" data-i18n="summary.form">Form</div>
                     <div class="analysis-value" id="form-text">100%</div>
                 </div>
             </div>
@@ -284,11 +284,11 @@
         <div class="simple-actions" style="display: flex; gap: 10px; width: 100%; margin-top: 1.5rem;">
             <button class="start-btn" onclick="location.reload()" style="flex: 1; margin: 0; padding: 14px; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
                 <i data-lucide="refresh-cw" style="width: 16px;"></i>
-                Yeni
+                <span data-i18n="summary.newWorkout">Yeni</span>
             </button>
             <button id="share-summary-btn" class="btn-primary" style="flex: 1; background: #25D366; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; font-size: 0.9rem;">
                 <i data-lucide="share-2" style="width: 16px;"></i>
-                Paylaş
+                <span data-i18n="profile.share">Paylaş</span>
             </button>
         </div>
     </div>

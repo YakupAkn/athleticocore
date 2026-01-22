@@ -2,10 +2,11 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Antrenman İstatistikleri – AthleticoCoach</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title data-i18n="stats.title">Antrenman İstatistikleri – AthleticoCoach</title>
 
     <link rel="icon" type="image/png" href="assets/icons/ac.png?v=1">
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://nhrtpvfofrzndbumkdax.supabase.co";
@@ -15,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="js/translation.js"></script>
         <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKGT70JY2E"></script>
     <script>
@@ -64,6 +66,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
             transition: background-color 0.3s ease;
         }
 
@@ -217,7 +221,7 @@
 
         .bottom-nav {
             position: fixed;
-            bottom: 25px;
+            bottom: calc(25px + env(safe-area-inset-bottom));
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 40px);
@@ -260,24 +264,24 @@
             <div class="stat-card">
                 <i data-lucide="zap"></i>
                 <span class="value" id="total-pushups">0</span>
-                <span class="label">Toplam Şınav</span>
+                <span class="label" data-i18n="stats.totalPushups">Toplam Şınav</span>
             </div>
             <div class="stat-card">
                 <i data-lucide="award"></i>
                 <span class="value" id="best-session">0</span>
-                <span class="label">En İyi Seri</span>
+                <span class="label" data-i18n="stats.bestSeries">En İyi Seri</span>
             </div>
         </div>
 
         <div class="chart-box">
             <div class="chart-header">
-                <h3>Gelişim Analizi</h3>
+                <h3 data-i18n="stats.development">Gelişim Analizi</h3>
             </div>
             <div id="main-chart"></div>
         </div>
 
         <div class="activity-section">
-            <h3>SON AKTİVİTELER</h3>
+            <h3 data-i18n="stats.recentActivity">SON AKTİVİTELER</h3>
             <div id="activity-list">
                 <!-- Veriler JS ile gelecek -->
             </div>
@@ -287,27 +291,27 @@
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
             <i data-lucide="home"></i>
-            <span>Ana Sayfa</span>
+            <span data-i18n="nav.home">Ana Sayfa</span>
         </a>
 
         <a href="coach.html" class="nav-item" aria-current="page">
             <i data-lucide="activity"></i>
-            <span>AI PushUp</span>
+            <span data-i18n="nav.aiCoach">AI PushUp</span>
         </a>
 
         <a href="stats.html" class="nav-item active">
             <i data-lucide="bar-chart-3"></i>
-            <span>Analiz</span>
+            <span data-i18n="nav.stats">Analiz</span>
         </a>
 
         <a href="profile.html" class="nav-item">
             <i data-lucide="user-round"></i>
-            <span>Profil</span>
+            <span data-i18n="nav.profile">Profil</span>
         </a>
 
         <a href="ayarlar.html" class="nav-item">
             <i data-lucide="settings"></i>
-            <span>Ayarlar</span>
+            <span data-i18n="nav.settings">Ayarlar</span>
         </a>
         
     </nav>
@@ -402,7 +406,7 @@
             if (!listEl) return;
             
             if (sessions.length === 0) {
-                listEl.innerHTML = `<p style="text-align:center; color:gray; font-size:0.8rem;">Henüz aktivite yok.</p>`;
+                listEl.innerHTML = `<p style="text-align:center; color:gray; font-size:0.8rem;">${getTranslation('stats.noActivity')}</p>`;
                 return;
             }
 
@@ -411,8 +415,8 @@
                     <div class="activity-left">
                         <div class="activity-icon"><i data-lucide="zap"></i></div>
                         <div class="activity-details">
-                            <h4>Şınav Antrenmanı</h4>
-                            <p>${new Date(s.started_at).toLocaleDateString('tr-TR')} - ${new Date(s.started_at).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'})}</p>
+                            <h4>${getTranslation('home.dailyStats')}</h4>
+                            <p>${new Date(s.started_at).toLocaleDateString(currentLanguage)} - ${new Date(s.started_at).toLocaleTimeString(currentLanguage, {hour:'2-digit', minute:'2-digit'})}</p>
                         </div>
                     </div>
                     <div class="activity-count">+${s.push}</div>
@@ -423,29 +427,41 @@
 
         function renderChart(dataMap) {
             const isLight = body.getAttribute("data-theme") === "light";
+            // Get CSS variables for consistency
+            const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim();
+            const labelColor = getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim();
+
             const categories = Object.keys(dataMap).map(d => {
-                return new Date(d).toLocaleDateString('tr-TR', { weekday: 'short' });
+                return new Date(d).toLocaleDateString(currentLanguage, { weekday: 'short' });
             });
             const seriesData = Object.values(dataMap);
 
             const options = {
-                series: [{ name: "Şınav", data: seriesData }],
+                series: [{ name: getTranslation('stats.totalPushups'), data: seriesData }],
                 chart: {
                     type: "area",
                     height: 200,
                     toolbar: { show: false },
-                    animations: { enabled: true }
+                    animations: { enabled: true },
+                    background: 'transparent'
                 },
                 colors: ["#0070f3"],
                 stroke: { curve: "smooth", width: 3 },
                 xaxis: {
                     categories: categories,
-                    labels: { style: { colors: isLight ? "#666" : "#aaa" } }
+                    labels: { style: { colors: labelColor } }
                 },
-                yaxis: { labels: { style: { colors: isLight ? "#666" : "#aaa" } } },
-                grid: { borderColor: isLight ? "#eee" : "#222" },
+                yaxis: { labels: { style: { colors: labelColor } } },
+                grid: { borderColor: gridColor },
                 dataLabels: { enabled: false },
-                tooltip: { theme: isLight ? "light" : "dark" }
+                tooltip: {
+                    theme: isLight ? "light" : "dark",
+                    y: {
+                        formatter: function(value) {
+                            return value;
+                        }
+                    }
+                }
             };
 
             if (chart) chart.destroy();
